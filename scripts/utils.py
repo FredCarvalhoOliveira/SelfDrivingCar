@@ -11,8 +11,6 @@ def getPerspectiveMatrix(img, src, dst, size):
 
    return img_warped, transformMatrix, transformMatrixInv
 
-# def saveConfiguration(fileName):
-
 
 def createTrackbars(frameWidth, frameHeight):
    ### Creating slider control window ###
@@ -72,7 +70,21 @@ def loadCalibValues(filename):
    values = jsonpickle.decode(f.read())
    return values
 
+def setCalibValues(values):
+   # Crop slider
+   cv2.setTrackbarPos('crop TopY', 'calib', values['crop TopY'])
+   cv2.setTrackbarPos('crop BotY', 'calib', values['crop BotY'])
 
+   # ROI sliders
+   cv2.setTrackbarPos('roiTL x', 'calib', values['roiTL x'])
+   cv2.setTrackbarPos('roiTR x', 'calib', values['roiTR x'])
+   cv2.setTrackbarPos('roiBL x', 'calib', values['roiBL x'])
+   cv2.setTrackbarPos('roiBR x', 'calib', values['roiBR x'])
+   # Perspective warp sliders
+   cv2.setTrackbarPos('warperTL x', 'calib', values['warperTL x'])
+   cv2.setTrackbarPos('warperTR x', 'calib', values['warperTR x'])
+   cv2.setTrackbarPos('warperBL x', 'calib', values['warperBL x'])
+   cv2.setTrackbarPos('warperBR x', 'calib', values['warperBR x'])
 
 
 
