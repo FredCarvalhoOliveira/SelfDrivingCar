@@ -119,7 +119,8 @@ while cap_obj.isOpened():
    debug = lane.getDebugFrame()
    debug = lane.debugLanePoints(debug)
    debug = lane.debugLaneEstimation(debug)
-   cv2.line(debug, (centerX, 0),               (centerX,               debug.shape[0] - 1), (255, 0, 0), 1)
+   cv2.line(debug, (centerX, 0),               (centerX,               debug.shape[0] - 1), (255, 0, 0), 1) #FIX CENTER METRIC
+
    # cv2.line(debug, (int(debug.shape[1]/2), 0), (int(debug.shape[1]/2), debug.shape[0]-1),   (255, 0, 0), 2)
    debug = imutils.resize(debug, width=WIDTH)
    # warped_debug = cv2.warpPerspective(debug, Minv, (frame.shape[0], frame.shape[1]), flags=cv2.INTER_LINEAR)

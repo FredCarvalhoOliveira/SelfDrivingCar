@@ -23,7 +23,7 @@ HEIGHT  = int((cap_obj.get(cv2.CAP_PROP_FRAME_HEIGHT) * WIDTH) / cap_obj.get(cv2
 
 ##############################
 ###  Read Trackbar Values  ###
-values = loadCalibValues("../res/calibration_values")
+values = loadCalibValues("../res/calibration_values_video")
 
 lane = Lane()
 
@@ -98,7 +98,7 @@ while cap_obj.isOpened():
 
    key = cv2.waitKey(20) & 0xFF
    if   key == ord('s'):
-      calibFilePath = "../res/calibration_values"
+      calibFilePath = "../res/calibration_values_video"
       saveCalibValues(calibFilePath, values)
       break
    elif key == ord('q'):
