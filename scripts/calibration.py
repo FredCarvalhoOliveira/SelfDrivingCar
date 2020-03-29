@@ -17,7 +17,11 @@ def cropImg(img, cropTopY, cropBotY):
 
 ############################
 ###  Init Video Capture  ###
-cap_obj = cv2.VideoCapture("../res/driving.mp4")
+#cap_obj = cv2.VideoCapture("../res/driving.mp4")
+cap_obj = cv2.VideoCapture(0)
+
+
+
 WIDTH   = 500
 HEIGHT  = int((cap_obj.get(cv2.CAP_PROP_FRAME_HEIGHT) * WIDTH) / cap_obj.get(cv2.CAP_PROP_FRAME_WIDTH))
 
@@ -30,6 +34,7 @@ lane = Lane()
 
 NUM_SKIP_FRAMES = 1
 frameCount = 0
+
 
 while cap_obj.isOpened():
    ret, frame = cap_obj.read()

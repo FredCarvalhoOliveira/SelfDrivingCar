@@ -91,6 +91,3 @@ def setCalibValues(values):
 
 
 
-
-
-

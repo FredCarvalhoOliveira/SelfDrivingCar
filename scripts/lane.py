@@ -78,9 +78,13 @@ class Lane:
       #else the lines stay the same
 
    def getCurvature(self):
+      if self.leftLine is None:
+         return None
       return int(self.leftLine(0) - self.leftLine(self.__laneView.shape[0]-1))
 
    def getCenter(self):
+      if self.leftLine is None or self.rightLine is None:
+         return None
       bottomLeftLine  = self.leftLine(self.__laneView.shape[0]-1)
       bottomRightLine = self.rightLine(self.__laneView.shape[0]-1)
       return int(bottomLeftLine + (bottomRightLine - bottomLeftLine)/2)
@@ -100,6 +104,8 @@ class Lane:
       return debugFrame
 
    def debugLaneEstimation(self, debugFrame):
+      if self.leftLine is None or self.rightLine is None:
+         return debugFrame
       for pxl in range(debugFrame.shape[0]):
          cv2.circle(debugFrame, (int(self.leftLine(pxl)),  pxl), 2, (0, 255, 0), -1)
          cv2.circle(debugFrame, (int(self.rightLine(pxl)), pxl), 2, (0, 255, 0), -1)

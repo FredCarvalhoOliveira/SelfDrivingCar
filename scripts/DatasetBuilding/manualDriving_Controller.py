@@ -1,6 +1,9 @@
 import pygame, sys
 import socket
 from time import sleep
+import cv2
+from videoStreamReceiver import VideoStreamReceiver
+import imutils
 
 # setup the pygame window
 pygame.init()
@@ -32,14 +35,24 @@ def buildControlMsg(axis_map):
    return msg
 
 
+
+
+
+
+
+
+
 # Setup UDP socket
-host = '192.168.2.62'  # car local Ip
+host = '192.168.1.7'  # car local Ip
 port = 5005
 s = socket.socket(socket.AF_INET,  # Internet
                   socket.SOCK_DGRAM)
 print("connecting")
 s.connect((host, port))
 print("connected")
+
+videoReceiver = VideoStreamReceiver()
+videoReceiver.setupVideoStreamReceiver('192.168.1.4', 8089)
 
 while True:
    for event in pygame.event.get():
@@ -52,3 +65,16 @@ while True:
    msg = buildControlMsg(axis_map)
    # print(msg)
    s.sendall(msg.encode('utf-8'))
+
+   frame = videoReceiver.recvVideoFrame()
+   scale = 5
+   frame = imutils.resize(frame, frame.shape[1] * scale, frame.shape[0] * scale)
+
+   # Display
+   cv2.imshow('frame', frame)
+
+
+   if cv2.waitKey(1) & 0xFF == ord('q'):
+      break
+
+cv2.destroyAllWindows()
