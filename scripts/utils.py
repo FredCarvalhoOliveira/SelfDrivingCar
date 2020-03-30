@@ -87,6 +87,25 @@ def setCalibValues(values):
    cv2.setTrackbarPos('warperBR x', 'calib', values['warperBR x'])
 
 
+def writeFeaturesDebugText(debugFrame, curv, centerX, coefs):
+   if curv is None:
+      cv2.putText(debugFrame, "Curvature = ",    (10, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+   else:
+      cv2.putText(debugFrame, "Curvature = " + str(curv),    (10, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+
+   if centerX is None:
+      cv2.putText(debugFrame, "   Center = ", (10, 32), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+   else:
+      cv2.putText(debugFrame, "   Center = " + str(centerX), (10, 32), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+
+   if coefs is None:
+      cv2.putText(debugFrame, "   A Coef = ", (10, 47), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+      cv2.putText(debugFrame, "   B Coef = ", (10, 62), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+      cv2.putText(debugFrame, "   C Coef = ", (10, 77), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+   else:
+      cv2.putText(debugFrame, "   A Coef = " + str(coefs[0]), (10, 47), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+      cv2.putText(debugFrame, "   B Coef = " + str(coefs[1]), (10, 62), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+      cv2.putText(debugFrame, "   C Coef = " + str(coefs[2]), (10, 77), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
 
 
 

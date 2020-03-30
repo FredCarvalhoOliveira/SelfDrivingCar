@@ -1,8 +1,10 @@
 import pygame, sys
 import socket
+from scripts.utils import loadCalibValues, writeFeaturesDebugText
 from time import sleep
 import cv2
 from videoStreamReceiver import VideoStreamReceiver
+from scripts.imageProcessing import ImageProcessing
 import imutils
 
 # setup the pygame window
@@ -54,6 +56,11 @@ print("connected")
 videoReceiver = VideoStreamReceiver()
 videoReceiver.setupVideoStreamReceiver('192.168.1.4', 8089)
 
+calibValues = loadCalibValues("../res/calibration_values")
+
+imgProcess = ImageProcessing()
+imgProcess.setCalibValues(calibValues)
+
 while True:
    for event in pygame.event.get():
       # loop through events, if window shut down, quit program
@@ -63,18 +70,41 @@ while True:
 
    # Build and send control message
    msg = buildControlMsg(axis_map)
-   # print(msg)
    s.sendall(msg.encode('utf-8'))
 
+   # Receive Frame and resize it
    frame = videoReceiver.recvVideoFrame()
    scale = 5
    frame = imutils.resize(frame, frame.shape[1] * scale, frame.shape[0] * scale)
 
+   # Feature extraction
+   croppedImg = imgProcess.cropFrame(frame)
+   binImg     = imgProcess.segmentFrame(croppedImg, 180)
+   roi        = imgProcess.applyRoiMask(binImg)
+   warp_img   = imgProcess.applyBirdsEyePerspective(roi)
+   curv, centerX, coefs = imgProcess.extractLaneFeatures(warp_img)
+
+
+
+   # Debugging
+   lane  = imgProcess.getLane()
+   debug = lane.getDebugFrame()
+   debug = lane.debugLanePoints(debug)
+   debug = lane.debugLaneEstimation(debug)
+   writeFeaturesDebugText(debug, curv, centerX, coefs)
+
+
+
+
    # Display
    cv2.imshow('frame', frame)
+   cv2.imshow('Debug Frame', debug)
 
 
    if cv2.waitKey(1) & 0xFF == ord('q'):
       break
 
 cv2.destroyAllWindows()
+
+
+
