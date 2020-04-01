@@ -13,14 +13,13 @@ class VideoStreamReceiver:
 
    def setupVideoStreamReceiver(self, host, port):
       self.receiverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-      print('Socket created')
       self.receiverSocket.bind((host, port))
-      print('Socket bind complete')
+      print('>> VideoStream Socket created')
       self.receiverSocket.listen(10)
-      print('Socket now listening')
-
+      print('>> VideoStream Socket waiting for connections...')
       conn, addr = self.receiverSocket.accept()
       self.streamSocket = conn
+      print('>> VideoStream connected to ' + str(addr))
 
 
    def recvVideoFrame(self):
@@ -43,3 +42,6 @@ class VideoStreamReceiver:
       frame = pickle.loads(frame_data)
 
       return frame
+
+   def endConnection(self):
+      self.streamSocket.close()
