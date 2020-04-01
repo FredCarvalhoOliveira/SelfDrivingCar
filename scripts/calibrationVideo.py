@@ -23,15 +23,15 @@ cap_obj = cv2.VideoCapture("../res/driving.mp4")
 
 
 
-# WIDTH   = 500
-# HEIGHT  = int((cap_obj.get(cv2.CAP_PROP_FRAME_HEIGHT) * WIDTH) / cap_obj.get(cv2.CAP_PROP_FRAME_WIDTH))
+WIDTH   = 500
+HEIGHT  = int((cap_obj.get(cv2.CAP_PROP_FRAME_HEIGHT) * WIDTH) / cap_obj.get(cv2.CAP_PROP_FRAME_WIDTH))
 
 
 ################################
 ###  Create Trackbar Window  ###
 ret, frame = cap_obj.read()
 createTrackbars(frame.shape[1], frame.shape[0])
-values = loadCalibValues("../res/calibration_values")
+values = loadCalibValues("../res/calibration_values_video")
 setCalibValues(values)
 
 
@@ -46,7 +46,7 @@ imageProcess = ImageProcessing()
 
 
 
-while True:#cap_obj.isOpened():
+while cap_obj.isOpened():
    ret, frame = cap_obj.read()
 
 
@@ -73,6 +73,7 @@ while True:#cap_obj.isOpened():
 
    ###############################
    ###  Crop and Resize Frame  ###
+   frame = imutils.resize(frame, width=WIDTH)
    crop  = imageProcess.cropFrame(frame)
 
    ############################
@@ -164,7 +165,7 @@ while True:#cap_obj.isOpened():
 
    key = cv2.waitKey(20) & 0xFF
    if key == ord('s'):
-      calibFilePath = "../res/calibration_values"
+      calibFilePath = "../res/calibration_values_video"
       saveCalibValues(calibFilePath, values)
       break
    elif key == ord('q'):

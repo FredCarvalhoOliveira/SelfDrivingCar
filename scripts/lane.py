@@ -15,44 +15,93 @@ class Lane:
       self.__original = viewImg
       self.__laneView = viewImg/255
 
+
+
+   def __sliceWindow(self, windowTopLeftCoords, width, height):
+      x = windowTopLeftCoords[0]
+      y = windowTopLeftCoords[1]
+
+      window = self.__laneView[y+1 : y+height+1,  x+1 : x+width+1]
+
+      return window
+
+   def __findPointInSearchWindow(self, window, windowLeftX):
+      return np.where(window == 1)
+
+   def findLaneLine2(self, numLanePts, isLeftLane):
+      MAX_X_OFFSET     = 20
+      line = []
+      sliderWindHeight = int(self.__laneView.shape[1] / numLanePts)  # review shape index
+      windowY = self.__laneView.shape[1] - sliderWindHeight
+      last_coords = None
+
+      # for pointIndex in range(numLanePts)
+
+
+
+
    def findLaneLine(self, numLanePts, isLeftLane):
       MAX_X_OFFSET     = 20
       line             = []
-      sliderWindHeight = int(self.__laneView.shape[1] / numLanePts)
-      windowY          = self.__laneView.shape[1] - sliderWindHeight
+      sliderWindHeight = int(self.__laneView.shape[0] / numLanePts)  # review shape index
       last_coords      = None
 
-      if isLeftLane: iterPxls = range(int(self.__laneView.shape[1] / 2))
-      else:          iterPxls = range(int(self.__laneView.shape[1] / 2), self.__laneView.shape[1])
 
-      for pointIndex in range(numLanePts):
-         lineCoords = None
+
+      # Pixel ranges to slide the windows
+      if isLeftLane:
+         iterPxls = np.arange(0, self.__laneView.shape[1] - self.__sliderWindWidth + 1, self.__sliderWindWidth)
+      else:
+         iterPxls = np.arange(self.__laneView.shape[1] - self.__sliderWindWidth, -1, -self.__sliderWindWidth)
+
+
+      for pointIndex in np.arange(numLanePts-1, -1, -1):
+         lanePoint = None
+
+         windowY = pointIndex * sliderWindHeight
+
          for x in iterPxls:
-
             # slice ROI FOR PIXEL ANALYSIS
-            window     = self.__laneView[windowY: windowY + sliderWindHeight, x: x + self.__sliderWindWidth]
-            rows, cols = np.where(window == 1)
-            coordsX    = cols + x
 
+            windowTopLeftCoords = (x, windowY)
+            window = self.__sliceWindow(windowTopLeftCoords, self.__sliderWindWidth, sliderWindHeight)
+
+            rows, cols = np.where(window == 1)
+            coordsX    = cols + windowTopLeftCoords[0]
+
+            # Are there enough white pixels to be considered a point
             if len(coordsX > 10):
-               lineCoords = (int(np.mean(coordsX)), int(windowY + sliderWindHeight / 2))
+               lanePoint = (int(np.mean(coordsX)), windowY + int(sliderWindHeight/2))
                break
+
 
          # Lane point found, save it and update last point var
-         if lineCoords is not None:
-            if last_coords is None or abs(lineCoords[0] - last_coords[0]) <= MAX_X_OFFSET:
-               last_coords = lineCoords
-               line.append(lineCoords)
+         if lanePoint is not None:
+            if not line:
+               # Middle validation only occurs for first line point
+               if isLeftLane:
+                  if lanePoint[0] <= int(self.__laneView.shape[1]/2):
+                     # is valid
+                     last_coords = lanePoint
+                     line.append(lanePoint)
+               else:
+                  if lanePoint[0] > int(self.__laneView.shape[1]/2):
+                     # is valid
+                     last_coords = lanePoint
+                     line.append(lanePoint)
             else:
-               break
+               if last_coords is None or abs(lanePoint[0] - last_coords[0]) <= MAX_X_OFFSET:
+                  last_coords = lanePoint
+                  line.append(lanePoint)
 
-         windowY -= sliderWindHeight
       return np.array(line)
+
 
    def findLaneLines(self, numLanePts):
       leftLinePts  = self.findLaneLine(numLanePts, isLeftLane=True)
       rightLinePts = self.findLaneLine(numLanePts, isLeftLane=False)
       return leftLinePts, rightLinePts
+
 
    def fitCurve(self, lanePts):
       if len(lanePts) > 0:
@@ -99,7 +148,7 @@ class Lane:
          cv2.circle(debugFrame, (pt[0],      pt[1]), 2, (0, 255, 0), -1)
          cv2.circle(debugFrame, (pt[0] + 20, pt[1]), 1,  (0, 0, 255), -1)
       for pt in rightPts:
-         cv2.circle(debugFrame, (pt[0],      pt[1]), 2, (0, 255, 0), -1)
+         cv2.circle(debugFrame, (pt[0],      pt[1]), 2, (255, 0, 0), -1)
          cv2.circle(debugFrame, (pt[0] + 20, pt[1]), 1,  (0, 0, 255), -1)
       return debugFrame
 
