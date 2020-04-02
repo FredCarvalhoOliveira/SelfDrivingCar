@@ -40,13 +40,6 @@ def buildControlMsg(axis_map):
    return msg
 
 
-
-
-
-
-
-
-
 # # Setup UDP socket
 # host = '192.168.1.5'  # car local Ip
 # port = 5005
@@ -71,6 +64,8 @@ frame = videoReceiver.recvVideoFrame()
 RECORD_VIDEO = True
 fourcc      = cv2.VideoWriter_fourcc(*'mp4v')
 vidRecorder = cv2.VideoWriter('../../res/VideoRecording.mp4', fourcc, 15.0, (frame.shape[1], frame.shape[0]))
+
+
 
 while True:
    for event in pygame.event.get():

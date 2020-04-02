@@ -163,7 +163,7 @@ while cap_obj.isOpened():
    cv2.imshow('Birds eye View', debug)
    # cv2.imshow('Warped Debug', warped_debug)
 
-   key = cv2.waitKey(20) & 0xFF
+   key = cv2.waitKey(1) & 0xFF
    if key == ord('s'):
       calibFilePath = "../res/calibration_values_video"
       saveCalibValues(calibFilePath, values)

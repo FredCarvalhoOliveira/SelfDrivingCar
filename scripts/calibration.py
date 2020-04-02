@@ -90,7 +90,7 @@ while True:#cap_obj.isOpened():
    ############################
    ###  Frame segmentation  ###
    gray   = cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
-   binImg = imageProcess.segmentFrame(gray, 180)
+   binImg = imageProcess.segmentFrame(gray, 80)
 
    #####################
    ###  ROI Masking  ###
