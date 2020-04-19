@@ -1,35 +1,64 @@
-import numpy as np
-
+from datetime import datetime
 ##############################################################
 #           This class is a dataset building tool            #
 #                                                            #
 #  DATASET FORMAT                                            #
 #  - CSV file                                                #
-#  - curv, centerX, coef[0], coef[1], coef[2], hCtrl, vCtrl  #
-#    |--------------- INPUTS ---------------| |- OUTPUTS -|  #
+#  - curv;centerX;coef[0];coef[1];coef[2]|hCtrl;vCtrl        #
+#    |--------------- INPUTS -----------| |- OUTPUTS -|      #
 #                                                            #
 ##############################################################
 
 class DatasetBuilder:
-   def __init__(self):
-      self.dataset = None
+   def __init__(self, fileName, bufferSize=1000):
+      date_time = datetime.now().strftime("%m-%d-%Y__%H-%M-%S")
+      self.fileName    = "../../res/datasets/" + date_time + "_" + fileName
+      self.bufferSize  = bufferSize
+      self.bufferCount = 0
+      self.buffer      = ""
 
    def addDataLine(self, inputsArray, outputsArray):
-      line = np.hstack((inputsArray, outputsArray))
-      if self.dataset is None:
-         self.dataset = line
-      else:
-         self.dataset = np.vstack((self.dataset, line))
+      # Dump buffer
+      if self.bufferCount == self.bufferSize:
+         self.writeToFile()
+         self.buffer      = ""
+         self.bufferCount = 0
 
-   def generateDataset(self):
-      print(self.dataset)
+      line = ""
+      for i in range(len(inputsArray)):
+         if i == len(inputsArray) - 1:
+            line += str(inputsArray[i]) + "|"
+         else:
+            line += str(inputsArray[i]) + ";"
+      for i in range(len(outputsArray)):
+         if i == len(outputsArray) - 1:
+            line += str(outputsArray[i]) + "\n"
+         else:
+            line += str(outputsArray[i]) + ";"
+
+      self.buffer      += line
+      self.bufferCount += 1
+
+   def writeToFile(self):
+      file = open(self.fileName, "a")
+      file.write(self.buffer)
+      file.close()
+
+   # Dump the rest of buffer contents
+   def finish(self):
+      self.writeToFile()
 
 
-db = DatasetBuilder()
-db.addDataLine(["teste", "2", "3"], ["asd", "dads"])
-db.addDataLine(["teste", "2", "3"], ["asd", "dads"])
-db.addDataLine(["teste", "2", "3"], ["asd", "dads"])
-db.generateDataset()
+if __name__ == '__main__':
+   db = DatasetBuilder("teste.txt", 2)
+   db.addDataLine([1.2, 1.897, 3], [212.421234, 25])
+   db.addDataLine([1.2, 1.897, 3], [212.421234, 25])
+   db.addDataLine([1.2, 1.897, 3], [212.421234, 25])
+   db.addDataLine([1.2, 1.897, 3], [212.421234, 25])
+   db.addDataLine([1.2, 1.897, 3], [212.421234, 25])
+   db.addDataLine([1.2, 1.897, 3], [212.421234, 25])
+   db.addDataLine([1.2, 1.897, 3], [212.421234, 25])
+   db.finish()
 
 
 
