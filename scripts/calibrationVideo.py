@@ -118,7 +118,7 @@ while cap_obj.isOpened():
    leftPts, rightPts = lane.findLaneLines(numLanePts=20)
    lane.estimateLaneLines(leftPts, rightPts)
    curv    = lane.getCurvature()
-   centerX = lane.getCenter()
+   centerX = lane.getCenter(55)
    coef    = lane.leftLineCoef
 
 
@@ -128,7 +128,8 @@ while cap_obj.isOpened():
    debug = lane.debugLanePoints(debug)
    debug = lane.debugLaneEstimation(debug)
 
-   # cv2.line(debug, (centerX, 0),               (centerX,               debug.shape[0] - 1), (255, 0, 0), 1) #FIX CENTER METRIC
+   if centerX:
+      cv2.line(debug, (centerX, int(debug.shape[0]/2)), (centerX,  debug.shape[0]-1), (255, 0, 0), 1) #FIX CENTER METRIC
 
    # cv2.line(debug, (int(debug.shape[1]/2), 0), (int(debug.shape[1]/2), debug.shape[0]-1),   (255, 0, 0), 2)
 

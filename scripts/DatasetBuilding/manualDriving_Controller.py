@@ -97,6 +97,7 @@ while True:
    curv, centerX, coefs = imgProcess.extractLaneFeatures(warp_img)
 
 
+
    # Debugging
    lane  = imgProcess.getLane()
    debug = lane.getDebugFrame()

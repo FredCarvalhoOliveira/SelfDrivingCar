@@ -142,12 +142,25 @@ class Lane:
       return int(self.leftLine(0) - self.leftLine(self.__laneView.shape[0]-1))
 
 
-   def getCenter(self):
-      if self.leftLine is None or self.rightLine is None:
+   def getCenter(self, distanceToKeep):
+      if self.leftLine is None and self.rightLine is None:
          return None
-      bottomLeftLine  = self.leftLine(self.__laneView.shape[0]-1)
-      bottomRightLine = self.rightLine(self.__laneView.shape[0]-1)
-      return int(bottomLeftLine + (bottomRightLine - bottomLeftLine)/2)
+
+      # Can see left line, Cant see right line
+      elif callable(self.leftLine) and self.rightLine is None:
+         bottomLeftLine = self.leftLine(self.__laneView.shape[0]-1)
+         return int(bottomLeftLine + distanceToKeep)
+
+      # Cant see left line, Can see right line
+      elif self.leftLine is None and callable(self.rightLine):
+         bottomRightLine = self.rightLine(self.__laneView.shape[0]-1)
+         return int(bottomRightLine - distanceToKeep)
+
+      # Can see both
+      else:
+         bottomLeftLine  = self.leftLine(self.__laneView.shape[0]-1)
+         bottomRightLine = self.rightLine(self.__laneView.shape[0]-1)
+         return int(bottomLeftLine + (bottomRightLine - bottomLeftLine)/2)
 
 
    #########################
