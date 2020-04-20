@@ -15,7 +15,7 @@ class VideoStreamReceiver:
       self.receiverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
       self.receiverSocket.bind((host, port))
       print('>> VideoStream Socket created')
-      self.receiverSocket.listen(10)
+      self.receiverSocket.listen(1)
       print('>> VideoStream Socket waiting for connections...')
       conn, addr = self.receiverSocket.accept()
       self.streamSocket = conn
