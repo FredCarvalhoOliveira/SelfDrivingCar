@@ -43,6 +43,7 @@ def createTrackbars(frameWidth, frameHeight):
    cv2.setTrackbarPos('warperBL x', 'calib', 122)
    cv2.setTrackbarPos('warperBR x', 'calib', 429)
 
+
 def readTrackbars():
    """ Returns a dict containing trackbar values """
    values = {
@@ -87,7 +88,7 @@ def setCalibValues(values):
    cv2.setTrackbarPos('warperBR x', 'calib', values['warperBR x'])
 
 
-def writeFeaturesDebugText(debugFrame, curv, centerX, coefs):
+def drawFeaturesDebugText(debugFrame, curv, centerX, coefs):
    if curv is None:
       cv2.putText(debugFrame, "Curvature = ",    (10, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
    else:
@@ -106,6 +107,35 @@ def writeFeaturesDebugText(debugFrame, curv, centerX, coefs):
       cv2.putText(debugFrame, "   A Coef = " + str(coefs[0]), (10, 47), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
       cv2.putText(debugFrame, "   B Coef = " + str(coefs[1]), (10, 62), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
       cv2.putText(debugFrame, "   C Coef = " + str(coefs[2]), (10, 77), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+
+
+def drawRoiTrap(frame, values):
+   # Adjust trapezoid values for visualization
+   cropBotY = values['crop BotY']
+   cropTopY = values['crop TopY']
+   roi_trap_bottomY = cropBotY - cropTopY
+   roi_trap = np.array([[(values['roiTL x'], 0),  # TL
+                         (values['roiBL x'], roi_trap_bottomY),  # BL
+                         (values['roiBR x'], roi_trap_bottomY),  # BR
+                         (values['roiTR x'], 0)]])  # TR
+
+   roi_trap[0][1][1] = cropBotY
+   roi_trap[0][2][1] = cropBotY
+   roi_trap[0][0][1] = cropTopY
+   roi_trap[0][3][1] = cropTopY
+   cv2.polylines(frame, [roi_trap], True, (0, 0, 255))
+
+def drawPerspectiveTrap(frame, values):
+   cropBotY = values['crop BotY']
+   cropTopY = values['crop TopY']
+
+   top_L, top_R = (values['warperTL x'], 0), (values['warperTR x'], 0)
+   bot_L, bot_R = (values['warperBL x'], cropBotY), (values['warperBR x'], cropBotY)
+   # Adjust trapezoid values for visualization
+   pts = np.array([top_L, bot_L, bot_R, top_R])
+   pts[0][1] = cropTopY
+   pts[3][1] = cropTopY
+   cv2.polylines(frame, [pts], True, (0, 255, 0))
 
 
 

@@ -6,15 +6,15 @@ from   lane  import Lane
 from DatasetBuilding.videoStreamReceiver import VideoStreamReceiver
 from imageProcessing import ImageProcessing
 
-def applyMorphOps(frame):
-   kernel   = np.ones((3, 5), np.uint8)
-   kernel2  = np.ones((3, 3), np.uint8)
-   dilation = cv2.dilate(frame,   kernel,  iterations=1)
-   erosion  = cv2.erode(dilation, kernel2, iterations=1)
-   return erosion
-
-def cropImg(img, cropTopY, cropBotY):
-   return img[cropTopY:cropBotY, :]
+# def applyMorphOps(frame):
+#    kernel   = np.ones((3, 5), np.uint8)
+#    kernel2  = np.ones((3, 3), np.uint8)
+#    dilation = cv2.dilate(frame,   kernel,  iterations=1)
+#    erosion  = cv2.erode(dilation, kernel2, iterations=1)
+#    return erosion
+#
+# def cropImg(img, cropTopY, cropBotY):
+#    return img[cropTopY:cropBotY, :]
 
 
 ############################
@@ -95,6 +95,8 @@ while True:#cap_obj.isOpened():
    #####################
    ###  ROI Masking  ###
    roi = imageProcess.applyRoiMask(binImg)
+
+   # TODO REPLACE THIS WITH drawRoiTrap(frame, values) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    # Adjust trapezoid values for visualization
    roi_trap = np.array([[(values['roiTL x'], 0),  # TL
                          (values['roiBL x'], binImg.shape[0]),  # BL
@@ -111,6 +113,7 @@ while True:#cap_obj.isOpened():
 
    ###############################
    ###  Birds eye Perspective  ###
+   # TODO REPLACE THIS WITH drawPerspectiveTrap(frame, values) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    top_L, top_R = (values['warperTL x'], 0),        (values['warperTR x'], 0)
    bot_L, bot_R = (values['warperBL x'], cropBotY), (values['warperBR x'], cropBotY)
    # Adjust trapezoid values for visualization
@@ -120,6 +123,7 @@ while True:#cap_obj.isOpened():
    cv2.polylines(frame, [pts], True, (0, 255, 0))
    # dst               = np.float32([(320, 550), (320, 0), (480, 0), (480, 550)]) #720
    # warp_img, M, Minv = getPerspectiveMatrix(roi, src, dst, (800, 500))
+
    warp_img = imageProcess.applyBirdsEyePerspective(roi)
 
 
@@ -151,6 +155,7 @@ while True:#cap_obj.isOpened():
 
    ##################################
    ###  Show Windows and results  ###
+   # TODO REPLACE THIS WITH drawFeaturesDebugText(frame, curv, centerX, coefs) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    if curv is None:
       cv2.putText(frame, "Curvature = ",    (10, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
    else:
