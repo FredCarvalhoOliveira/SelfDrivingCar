@@ -1,4 +1,5 @@
 from datetime import datetime
+import numpy as np
 ##############################################################
 #           This class is a dataset building tool            #
 #                                                            #
@@ -16,6 +17,20 @@ class DatasetBuilder:
       self.bufferSize  = bufferSize
       self.bufferCount = 0
       self.buffer      = ""
+
+   # def addDataLine2(self, inputsArray, outputsArray):
+   #    # Dump buffer
+   #    if self.bufferCount == self.bufferSize:
+   #       self.writeToFile()
+   #       self.buffer      = ""
+   #       self.bufferCount = 0
+   #    line = ""
+   #    # MUITO MAIS RAPIDO EXPLORAR ESTA OPCAO
+   #    line += str(inputsArray.tostring() + outputsArray.tostring())
+   #
+   #    self.buffer      += line
+   #    self.bufferCount += 1
+
 
    def addDataLine(self, inputsArray, outputsArray):
       # Dump buffer
@@ -51,13 +66,9 @@ class DatasetBuilder:
 
 if __name__ == '__main__':
    db = DatasetBuilder("teste.txt", 2)
-   db.addDataLine([1.2, 1.897, 3], [212.421234, 25])
-   db.addDataLine([1.2, 1.897, 3], [212.421234, 25])
-   db.addDataLine([1.2, 1.897, 3], [212.421234, 25])
-   db.addDataLine([1.2, 1.897, 3], [212.421234, 25])
-   db.addDataLine([1.2, 1.897, 3], [212.421234, 25])
-   db.addDataLine([1.2, 1.897, 3], [212.421234, 25])
-   db.addDataLine([1.2, 1.897, 3], [212.421234, 25])
+   db.addDataLine(np.random.randint(0, 256, 5), np.random.rand(2))
+   # db.addDataLine2([1.2, 1.897, 3], [212.421234, 25])
+
    db.finish()
 
 

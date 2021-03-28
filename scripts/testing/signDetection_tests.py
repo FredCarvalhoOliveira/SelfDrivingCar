@@ -2,7 +2,7 @@ import cv2
 import time
 from timeAnalisis import TimeAnalisis
 
-cam = cv2.VideoCapture(0)
+cam = cv2.VideoCapture(1)
 TA  = TimeAnalisis()
 persistNumFrames = 5
 persistCount     = 0
