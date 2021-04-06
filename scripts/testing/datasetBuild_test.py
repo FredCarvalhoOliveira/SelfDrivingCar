@@ -55,10 +55,11 @@ db = DatasetBuilder("teste.txt", 50)
 for i in range(10):
    # inputs = np.random.randint(0, 256, (3, 2))
    # inputs = np.random.randint(0, 256, 2)
-   # inputs = np.array([[1, 2], [3, 4]])
-   inputs = np.array([[[1, 2], [1, 2]], [[1, 2], [1, 2]]])
+   inputs = np.array([[1, 2], [3, 4]])
+   print(inputs.dtype)
+   # inputs = np.array([[[1, 2], [1, 2]], [[1, 2], [1, 2]]])
 
-   print(inputs)
+   # print(inputs)
    outputs = np.random.rand(2)
 
    db.addDataLine(inputs, outputs)
