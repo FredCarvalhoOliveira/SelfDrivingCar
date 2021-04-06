@@ -32,10 +32,19 @@ class DatasetBuilder:
    #    self.bufferCount += 1
 
 
+
    def addDataLine(self, inputsArray, outputsArray):
+
+      if len(inputsArray.shape) > 2:
+         print("ERROR: Cant handle array shape in DatasetBuilder addDataLine()")
+         return
+      elif len(inputsArray.shape) == 2:
+         inputsArray = inputsArray.flatten() # flatten 2d array
+
+
       # Dump buffer
       if self.bufferCount == self.bufferSize:
-         self.writeToFile()
+         self.__writeToFile()
          self.buffer      = ""
          self.bufferCount = 0
 
@@ -54,14 +63,14 @@ class DatasetBuilder:
       self.buffer      += line
       self.bufferCount += 1
 
-   def writeToFile(self):
+   def __writeToFile(self):
       file = open(self.fileName, "a")
       file.write(self.buffer)
       file.close()
 
    # Dump the rest of buffer contents
    def finish(self):
-      self.writeToFile()
+      self.__writeToFile()
 
 
 if __name__ == '__main__':
