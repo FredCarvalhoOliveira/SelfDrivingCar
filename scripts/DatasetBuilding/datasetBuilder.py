@@ -96,12 +96,29 @@ class DatasetBuilder:
 
 
 if __name__ == '__main__':
-   # db = DatasetBuilder("teste.txt", 2)
-   # db.addDataLine(np.random.randint(0, 256, 5), np.random.rand(2))
-   # # db.addDataLine2([1.2, 1.897, 3], [212.421234, 25])
-   #
-   # db.finish()
-   pass
+   import cv2
+   import imutils
+
+   scale = 0.1
+   db    = DatasetBuilder("face.txt", 50)
+
+   cam = cv2.VideoCapture(1)
+
+   for i in range(100):
+      ret_val, frame = cam.read()
+      frame = imutils.resize(frame, int(frame.shape[1] * scale), int(frame.shape[0] * scale))
+      # frame = frame[int(frame.shape[0]/2):frame.shape[0]]
+
+      frame   = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+      outputs = np.random.rand(2)
+
+
+      db.addDataLine(frame, outputs)
+
+      cv2.imshow("img", frame)
+      if cv2.waitKey(1) & 0xFF == ord('q'):
+         break  # esc to quit
+   db.finish()
 
 
 

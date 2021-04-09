@@ -78,5 +78,32 @@ class DatasetParser:
 
 
 if __name__ == '__main__':
-   parser = DatasetParser("04-07-2021__15-28-27_teste.txt")
-   parser.loadDataset()
+   import imutils
+   import cv2
+
+   scale = 0.1
+
+   parser = DatasetParser("04-09-2021__22-47-17_face.txt")
+   inputs, outputs = parser.loadDataset()
+   print(inputs)
+   print(outputs)
+
+   imgIdx = 0
+   while True:
+      frame = inputs[imgIdx]
+      frame = imutils.resize(frame, int(frame.shape[1] / scale), int(frame.shape[0] / scale))
+      print(">>> #" + str(imgIdx) + " Current input <<<")
+      print(inputs[imgIdx])
+      print(">>> #" + str(imgIdx) + " Current output <<<")
+      print(outputs[imgIdx])
+      print()
+
+      cv2.imshow("img", frame)
+      if cv2.waitKey(0) & 0xFF == ord('n'):
+         if imgIdx < len(inputs) - 1:
+            imgIdx += 1
+      if cv2.waitKey(0) & 0xFF == ord('b'):
+         if imgIdx > 0:
+            imgIdx -= 1
+      if cv2.waitKey(0) & 0xFF == ord('q'):
+         break  # esc to quit
