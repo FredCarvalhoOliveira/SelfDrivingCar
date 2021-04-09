@@ -33,9 +33,6 @@ class DatasetBuilder:
    #    self.bufferCount += 1
 
    def __writeMetadata(self, inShape, outShape, inVarType, outVarType):
-      print("TESTEEEEEEE")
-      print(inShape)
-      print(outShape)
 
       line = ""
       for i in range(len(inShape)):
