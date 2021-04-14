@@ -62,13 +62,13 @@ while True:
    if axes != 0:
       for i in range(axes):
          getAxis(i)
-   if buttons != 0:
-      for i in range(buttons):
-         getButton(i)
-   if hats != 0:
-      for i in range(hats):
-         getHat(i)
-   axes = joystick.get_numaxes()
-   if joystick.get_axis(idx) < -0.1 or joystick.get_axis(idx) > 0.1:
-      # value between 1.0 and -1.0
-      print("Axis value is " + str(joystick.get_axis(idx)))
+   # if buttons != 0:
+   #    for i in range(buttons):
+   #       getButton(i)
+   # if hats != 0:
+   #    for i in range(hats):
+   #       getHat(i)
+   # axes = joystick.get_numaxes()
+   # if joystick.get_axis(idx) < -0.1 or joystick.get_axis(idx) > 0.1:
+   #    # value between 1.0 and -1.0
+   #    print("Axis value is " + str(joystick.get_axis(idx)))
