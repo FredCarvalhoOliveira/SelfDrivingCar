@@ -1,35 +1,10 @@
 import cv2
 import imutils
 import numpy as np
-from   utils import getPerspectiveMatrix, createTrackbars, readTrackbars, saveCalibValues, loadCalibValues, setCalibValues
+from   utils import getPerspectiveMatrix, createTrackbars, readTrackbars, saveCalibValues, loadCalibValues, setCalibValues, drawFeaturesDebugText
 from   lane  import Lane
 from DatasetBuilding.videoStreamReceiver import VideoStreamReceiver
 from imageProcessing import ImageProcessing
-
-# def applyMorphOps(frame):
-#    kernel   = np.ones((3, 5), np.uint8)
-#    kernel2  = np.ones((3, 3), np.uint8)
-#    dilation = cv2.dilate(frame,   kernel,  iterations=1)
-#    erosion  = cv2.erode(dilation, kernel2, iterations=1)
-#    return erosion
-#
-# def cropImg(img, cropTopY, cropBotY):
-#    return img[cropTopY:cropBotY, :]
-
-
-############################
-###  Init Video Capture  ###
-# cap_obj = cv2.VideoCapture("../res/driving.mp4")
-# cap_obj = cv2.VideoCapture(0)
-
-
-
-# WIDTH   = 500
-# HEIGHT  = int((cap_obj.get(cv2.CAP_PROP_FRAME_HEIGHT) * WIDTH) / cap_obj.get(cv2.CAP_PROP_FRAME_WIDTH))
-
-
-################################
-###  Create Trackbar Window  ###
 
 
 lane = Lane()
@@ -41,15 +16,17 @@ imageProcess = ImageProcessing()
 
 ## TEMPORARY
 videoReceiver = VideoStreamReceiver()
-videoReceiver.setupVideoStreamReceiver('192.168.1.4', 8089)
+videoReceiver.setupVideoStreamReceiver('192.168.2.245', 8089)
 frame = videoReceiver.recvVideoFrame()
 scale = 5
 frame = imutils.resize(frame, frame.shape[1] * scale, frame.shape[0] * scale)
 
 
+################################
+###  Create Trackbar Window  ###
 createTrackbars(frame.shape[1], frame.shape[0])
-values = loadCalibValues("../res/calibration_values")
-setCalibValues(values)
+# values = loadCalibValues("../res/calibration_values_new")
+# setCalibValues(values)
 
 
 while True:#cap_obj.isOpened():
@@ -58,20 +35,6 @@ while True:#cap_obj.isOpened():
    ## TEMPORARY
    frame = videoReceiver.recvVideoFrame()
    frame = cv2.cvtColor(frame, cv2.COLOR_GRAY2RGB)
-
-   # ################################
-   # ###  Loop Video for Testing  ###
-   # if frame is None:
-   #    cap_obj.set(cv2.CAP_PROP_POS_FRAMES, 0)
-   #    continue
-   #
-   #
-   # #####################
-   # ###  Skip Frames  ###
-   # frameCount += 1
-   # if frameCount <= NUM_SKIP_FRAMES:
-   #    continue
-   # frameCount = 0
 
 
    ##############################
@@ -90,7 +53,7 @@ while True:#cap_obj.isOpened():
    ############################
    ###  Frame segmentation  ###
    gray   = cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
-   binImg = imageProcess.segmentFrame(gray, 80)
+   binImg = imageProcess.segmentFrame(gray)
 
    #####################
    ###  ROI Masking  ###
@@ -133,7 +96,7 @@ while True:#cap_obj.isOpened():
    leftPts, rightPts = lane.findLaneLines(numLanePts=20)
    lane.estimateLaneLines(leftPts, rightPts)
    curv    = lane.getCurvature()
-   centerX = lane.getCenter()
+   centerX = lane.getCenter(55) # TODO CHANGE THIS IMPORTANT!!!! REMOVE ARG FROM HERE
    coef    = lane.leftLineCoef
 
 
@@ -155,25 +118,26 @@ while True:#cap_obj.isOpened():
 
    ##################################
    ###  Show Windows and results  ###
+   drawFeaturesDebugText(frame, curv, centerX, coef)
    # TODO REPLACE THIS WITH drawFeaturesDebugText(frame, curv, centerX, coefs) !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-   if curv is None:
-      cv2.putText(frame, "Curvature = ",    (10, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
-   else:
-      cv2.putText(frame, "Curvature = " + str(curv),    (10, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
-
-   if centerX is None:
-      cv2.putText(frame, "   Center = ", (10, 32), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
-   else:
-      cv2.putText(frame, "   Center = " + str(centerX), (10, 32), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
-
-   if coef is None:
-      cv2.putText(frame, "   A Coef = ", (10, 47), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
-      cv2.putText(frame, "   B Coef = ", (10, 62), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
-      cv2.putText(frame, "   C Coef = ", (10, 77), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
-   else:
-      cv2.putText(frame, "   A Coef = " + str(coef[0]), (10, 47), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
-      cv2.putText(frame, "   B Coef = " + str(coef[1]), (10, 62), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
-      cv2.putText(frame, "   C Coef = " + str(coef[2]), (10, 77), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+   # if curv is None:
+   #    cv2.putText(frame, "Curvature = ",    (10, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+   # else:
+   #    cv2.putText(frame, "Curvature = " + str(curv),    (10, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+   #
+   # if centerX is None:
+   #    cv2.putText(frame, "   Center = ", (10, 32), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+   # else:
+   #    cv2.putText(frame, "   Center = " + str(centerX), (10, 32), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+   #
+   # if coef is None:
+   #    cv2.putText(frame, "   A Coef = ", (10, 47), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+   #    cv2.putText(frame, "   B Coef = ", (10, 62), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+   #    cv2.putText(frame, "   C Coef = ", (10, 77), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+   # else:
+   #    cv2.putText(frame, "   A Coef = " + str(coef[0]), (10, 47), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+   #    cv2.putText(frame, "   B Coef = " + str(coef[1]), (10, 62), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+   #    cv2.putText(frame, "   C Coef = " + str(coef[2]), (10, 77), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
    cv2.imshow('img_original', frame)
    cv2.imshow('ROI', roi)
    cv2.imshow('Birds eye View', debug)
@@ -181,7 +145,7 @@ while True:#cap_obj.isOpened():
 
    key = cv2.waitKey(20) & 0xFF
    if key == ord('s'):
-      calibFilePath = "../res/calibration_values"
+      calibFilePath = "../res/calibration_values_new"
       saveCalibValues(calibFilePath, values)
       break
    elif key == ord('q'):

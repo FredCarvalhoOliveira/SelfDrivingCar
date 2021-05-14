@@ -21,8 +21,8 @@ class ImageProcessing:
       croppedImg = self.__cropImg(frame, cropTopY, cropBotY)
       return croppedImg
 
-   def segmentFrame(self, grayScaleFrame, threshold=180):
-      thresh, binaryImg = cv2.threshold(grayScaleFrame, threshold, 255, cv2.THRESH_BINARY)
+   def segmentFrame(self, grayScaleFrame):
+      thresh, binaryImg = cv2.threshold(grayScaleFrame, self.calibValues['binThresh'], 255, cv2.THRESH_BINARY)
       binaryImg = self.__applyMorphOps(binaryImg)
       return binaryImg
 

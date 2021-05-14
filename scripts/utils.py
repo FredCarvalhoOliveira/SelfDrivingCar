@@ -18,12 +18,14 @@ def createTrackbars(frameWidth, frameHeight):
       pass
 
    cv2.namedWindow('calib', cv2.WINDOW_NORMAL)
+   # Segmentation slider
+   cv2.createTrackbar('binThresh', 'calib', 0, 255, doNothing)
+   cv2.setTrackbarPos('binThresh', 'calib', 60)
    # Crop slider
    cv2.createTrackbar('crop TopY', 'calib', 0, frameHeight - 2, doNothing)
    cv2.createTrackbar('crop BotY', 'calib', 0, frameHeight - 1, doNothing)
    cv2.setTrackbarPos('crop TopY', 'calib', 176)
    cv2.setTrackbarPos('crop BotY', 'calib', 260)
-
    # ROI sliders
    cv2.createTrackbar('roiTL x', 'calib', 0, frameWidth - 1, doNothing)
    cv2.createTrackbar('roiTR x', 'calib', 0, frameWidth - 1, doNothing)
@@ -47,6 +49,8 @@ def createTrackbars(frameWidth, frameHeight):
 def readTrackbars():
    """ Returns a dict containing trackbar values """
    values = {
+      'binThresh':  cv2.getTrackbarPos('binThresh', 'calib'),
+
       'crop TopY':  cv2.getTrackbarPos('crop TopY', 'calib'),
       'crop BotY':  cv2.getTrackbarPos('crop BotY', 'calib'),
 
@@ -72,10 +76,11 @@ def loadCalibValues(filename):
    return values
 
 def setCalibValues(values):
+   # Segmentation Threshold  slider
+   cv2.setTrackbarPos('binThresh', 'calib', values['binThresh'])
    # Crop slider
    cv2.setTrackbarPos('crop TopY', 'calib', values['crop TopY'])
    cv2.setTrackbarPos('crop BotY', 'calib', values['crop BotY'])
-
    # ROI sliders
    cv2.setTrackbarPos('roiTL x', 'calib', values['roiTL x'])
    cv2.setTrackbarPos('roiTR x', 'calib', values['roiTR x'])

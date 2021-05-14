@@ -67,7 +67,7 @@ while cap_obj.isOpened():
    ############################
    ###  Frame segmentation  ###
    gray   = cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
-   binImg = imageProcess.segmentFrame(gray, 180)
+   binImg = imageProcess.segmentFrame(gray)
 
 
    #####################
@@ -88,7 +88,7 @@ while cap_obj.isOpened():
    leftPts, rightPts = lane.findLaneLines(numLanePts=20)
    lane.estimateLaneLines(leftPts, rightPts)
    curv    = lane.getCurvature()
-   centerX = lane.getCenter(55)
+   centerX = lane.getCenter(55) # TODO CHANGE THIS IMPORTANT!!!! REMOVE ARG FROM HERE
    coefs   = lane.leftLineCoef
 
 

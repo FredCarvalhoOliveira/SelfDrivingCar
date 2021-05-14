@@ -56,6 +56,20 @@ class DatasetParser:
 
       return inputs, outputs
 
+   def cleanDataset(self, inputs, outputs, minOutput):
+      inputs  = np.array(inputs)
+      outputs = np.array(outputs)
+
+      # mask = np.logical_and(outputs[:, 0] > minOutput, outputs[:, 1] > minOutput)
+      mask = outputs[:, 0] > minOutput
+
+      inputs  = inputs[mask]
+      outputs = outputs[mask]
+
+      return inputs, outputs
+
+
+
 
 
    # def loadDataset(self):
@@ -82,11 +96,14 @@ if __name__ == '__main__':
    import cv2
 
    scale = 0.1
-
-   parser = DatasetParser("04-09-2021__22-47-17_face.txt")
+   # res/datasets/05-14-2021__15-05-20_carTest.txt
+   parser = DatasetParser("05-14-2021__15-05-20_carTest.txt")
    inputs, outputs = parser.loadDataset()
-   print(inputs)
-   print(outputs)
+   inputs, outputs = parser.cleanDataset(inputs, outputs, 0.20)
+
+
+   # print(inputs)
+   # print(outputs)
 
    imgIdx = 0
    while True:

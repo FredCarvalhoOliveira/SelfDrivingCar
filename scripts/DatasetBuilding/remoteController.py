@@ -8,8 +8,8 @@ class RemoteController:
       self.sock = None
       self.remoteCtrlSocket = None
       self.controller = None
-      self.axis_map = { "leftVertical":    1,  # 1, 4
-                        "rightHorizontal": 4}
+      self.axis_map = { "leftVertical":    1,  # 1, 4  PS4 1, 2
+                        "rightHorizontal": 2}
 
       # how many joysticks connected to computer?
       controller_count = pygame.joystick.get_count()
