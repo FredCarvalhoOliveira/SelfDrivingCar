@@ -4,7 +4,7 @@ from torch.utils.data import DataLoader
 
 class DatasetParser:
    def __init__(self, fileName):
-      self.filepath = "../../res/datasets/" + fileName
+      self.filepath = fileName#"../../res/datasets/" + fileName
       self.inShape    = None
       self.outShape   = None
       self.inVarType  = None
@@ -74,7 +74,7 @@ if __name__ == '__main__':
    import cv2
 
    scale = 0.1
-   parser = DatasetParser("05-14-2021__15-05-20_carTest.txt")
+   parser = DatasetParser("../../res/datasets/05-14-2021__15-05-20_carTest.txt")
    inputs, desiredOutputs = parser.loadDataset()
 
 

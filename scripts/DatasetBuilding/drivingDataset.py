@@ -1,5 +1,9 @@
+import sys
+sys.path.append("..")
+
+import torch
 from torch.utils.data import Dataset
-from datasetParser import DatasetParser
+from DatasetBuilding.datasetParser import DatasetParser
 
 class DrivingDataset(Dataset):
    def __init__(self, filename, minAcceleration=0.20):
@@ -11,10 +15,14 @@ class DrivingDataset(Dataset):
       return len(self.inputs)
 
    def __getitem__(self, idx):
-      return self.inputs[idx], self.desiredOutputs[idx]
+      inputs = self.inputs[idx]
+      inputs = torch.from_numpy(inputs).view(1, inputs.shape[0], inputs.shape[1]).float()
+      # self.inputs = torch.from_numpy(inputs).view(1, inputs.shape[1], inputs.shape[2])
+
+      return inputs, self.desiredOutputs[idx]
 
    def __parseDataset(self, filename, minAcceleration):
-      print(">>> Parsing datafile " + filename)
+      print(">>> Parsing datafile " + filename.split("/")[-1])
       print(">>> Loading dataset...")
       parser = DatasetParser(filename)
       inputs, desiredOutputs = parser.loadDataset(minAcceleration)
@@ -24,6 +32,6 @@ class DrivingDataset(Dataset):
 
 
 if __name__ == '__main__':
-    dataset = DrivingDataset("05-14-2021__15-05-20_carTest.txt", minAcceleration=0.20)
+    dataset = DrivingDataset("../../res/datasets/05-14-2021__15-05-20_carTest.txt", minAcceleration=0.20)
     print(">>> Example sample (first):")
     print(dataset[0])

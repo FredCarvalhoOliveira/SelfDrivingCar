@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from tqdm import tqdm
+from DatasetBuilding.drivingDataset import DrivingDataset
+from torch.utils.data import DataLoader
 
 
 
@@ -78,8 +80,23 @@ class CNN(nn.Module):
 if __name__ == "__main__":
    TRAIN = False
 
-   cnn = CNN()
+   dataset = DrivingDataset("../res/datasets/05-14-2021__15-05-20_carTest.txt", minAcceleration=0.20)
+   dataloader = DataLoader(dataset, batch_size=10, shuffle=True)
 
+
+   batch = next(iter(dataloader))
+   print(batch)
+
+   cnn = CNN()
+   print(cnn(batch[0]))
+
+
+   # Training
+
+   device = torch.device('cuda')
+
+   epochs = 10
+   batchSize = 50
 
 
 
