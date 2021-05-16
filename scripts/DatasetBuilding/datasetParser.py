@@ -1,6 +1,6 @@
 import numpy as np
 import os
-
+from torch.utils.data import DataLoader
 
 class DatasetParser:
    def __init__(self, fileName):
@@ -22,7 +22,6 @@ class DatasetParser:
       for i in range(len(outShape)):
          outShape[i] = int(outShape[i])
       self.outShape = tuple(outShape) if len(outShape) > 1 else outShape[0]
-
       self.inVarType  = metadata[2]
       self.outVarType = metadata[3]
 
@@ -36,7 +35,7 @@ class DatasetParser:
 
       return inputs, outputs
 
-   def loadDataset(self):
+   def __parseDataset(self):
       dataFile = open(self.filepath, 'r')
       lines    = dataFile.readlines()
 
@@ -56,54 +55,28 @@ class DatasetParser:
 
       return inputs, outputs
 
-   def cleanDataset(self, inputs, outputs, minOutput):
+   def __cleanDataset(self, inputs, outputs, minAcceleration=0.20):
       inputs  = np.array(inputs)
       outputs = np.array(outputs)
-
-      # mask = np.logical_and(outputs[:, 0] > minOutput, outputs[:, 1] > minOutput)
-      mask = outputs[:, 0] > minOutput
-
+      mask    = outputs[:, 0] > minAcceleration
       inputs  = inputs[mask]
       outputs = outputs[mask]
-
       return inputs, outputs
 
-
-
-
-
-   # def loadDataset(self):
-   #    inputs  = None
-   #    outputs = None
-   #
-   #    with open(self.filepath) as f:
-   #       for _, line in enumerate(f):
-   #          data       = line.rstrip().split('|')
-   #          rawInputs  = data[0].split(';')
-   #          rawOutputs = data[1].split(';')
-   #
-   #          if inputs is None or outputs is None:
-   #             inputs = np.array(rawInputs)
-   #             outputs = np.array(rawOutputs)
-   #          else:
-   #             inputs  = np.vstack((inputs, np.array(rawInputs)))
-   #             outputs = np.vstack((outputs, np.array(rawOutputs)))
-   #    return inputs.astype(np.float), outputs.astype(np.float)
-
+   def loadDataset(self, minAcceleration=0.20):
+      inputs, desiredOutputs = self.__parseDataset()
+      inputs, desiredOutputs = self.__cleanDataset(inputs, desiredOutputs, minAcceleration)
+      # dataset = DrivingDataset(inputs, desiredOutputs)
+      return inputs, desiredOutputs
 
 if __name__ == '__main__':
    import imutils
    import cv2
 
    scale = 0.1
-   # res/datasets/05-14-2021__15-05-20_carTest.txt
    parser = DatasetParser("05-14-2021__15-05-20_carTest.txt")
-   inputs, outputs = parser.loadDataset()
-   inputs, outputs = parser.cleanDataset(inputs, outputs, 0.20)
+   inputs, desiredOutputs = parser.loadDataset()
 
-
-   # print(inputs)
-   # print(outputs)
 
    imgIdx = 0
    while True:
@@ -112,7 +85,7 @@ if __name__ == '__main__':
       print(">>> #" + str(imgIdx) + " Current input <<<")
       print(inputs[imgIdx])
       print(">>> #" + str(imgIdx) + " Current output <<<")
-      print(outputs[imgIdx])
+      print(desiredOutputs[imgIdx])
       print()
 
       cv2.imshow("img", frame)
