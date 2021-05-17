@@ -4,47 +4,65 @@ import cv2
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
-from DatasetBuilding.datasetParser import DatasetParser
+import matplotlib.patches as mpatches
+from DatasetBuilding.drivingDataset import DrivingDataset
+from torch.utils.data import DataLoader
 from modelCNN import CNN
 
-cnn = CNN()
-torch.no_grad()
-cnn.eval()
+
+# Device
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+# Load Model
+model = CNN()
+model.load_state_dict(torch.load("../../res/models/CNN_epochs_100"))
+model.eval()
+
+# Load Data
+dataset = DrivingDataset("../../res/datasets/05-14-2021__15-05-20_carTest.txt", minAcceleration=0.20)
+dataloader = DataLoader(dataset, batch_size=100, shuffle=True)
+inputs, targets = next(iter(dataloader))
+
+# Predict
+preds = model(inputs)
+acceleration_targets = targets.numpy()[:,0]
+acceleration_preds   = preds.detach().numpy()[:,0]
+steering_targets = targets.numpy()[:,1]
+steering_preds   = preds.detach().numpy()[:,1]
+
+# Plot
+plt.figure("Model evaluation", figsize=(15, 7))
+plt.subplot(2, 1, 1)
+plt.plot(acceleration_targets, 'g')
+plt.plot(acceleration_preds, 'b')
+plt.title("Acceleration Regression")
+plt.ylim([-1, 1])
+plt.ylabel("Acceleration")
+plt.xlabel("Timestep")
+plt.grid()
+targets_patch = mpatches.Patch(color='green', label='Target')
+preds_patch   = mpatches.Patch(color='blue',  label='Prediction')
+plt.legend(handles=[targets_patch, preds_patch])
+
+plt.subplot(2, 1, 2)
+plt.plot(steering_targets, 'g')
+plt.plot(steering_preds, 'b')
+plt.title("Steering Regression")
+plt.ylim([-1, 1])
+plt.ylabel("Steering")
+plt.xlabel("Timestep")
+plt.grid()
+targets_patch = mpatches.Patch(color='green', label='Target')
+preds_patch   = mpatches.Patch(color='blue',  label='Prediction')
+plt.legend(handles=[targets_patch, preds_patch])
+
+plt.tight_layout()
+plt.show()
 
 
 
-parser = DatasetParser("05-14-2021__15-05-20_carTest.txt")
-inputs, outputs = parser.loadDataset()
-inputs, outputs = parser.cleanDataset(inputs, outputs, 0.20)
-steering = outputs[:, 1]
-
-# inputs = inputs/255
-# imgs = torch.from_numpy(inputs)
-# imgs = imgs.view(inputs.shape[0], 1, inputs.shape[1], inputs.shape[2]).float()
 
 
 
 
 
-for i in [0, 10, 50, 100, 150, 300]:
-   img = torch.from_numpy(inputs[i] / 255)
-   img = img.view(1, 1, img.shape[0], img.shape[1]).float()
-   print(cnn(img))
-
-
-#    # print(preds[0])
-#    print(cnn(img))
-#    # plt.imshow(imgs[i][0].numpy())
-#    plt.imshow(inputs[i])
-#    plt.show()
-
-# for i in range(50):
-#    img = torch.rand(75, 100)
-   # plt.imshow(img.numpy())
-   # plt.show()
-
-   # img = img.view(1, 1, img.shape[0], img.shape[1])
-   # print(cnn(img))
-
-# plt.plot(steering)
-# plt.show()

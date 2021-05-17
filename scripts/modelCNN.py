@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.optim as optim
 import torch.nn.functional as F
 from tqdm import tqdm
 from DatasetBuilding.drivingDataset import DrivingDataset
@@ -23,7 +24,7 @@ class CNN(nn.Module):
       # self.pool2 = nn.MaxPool2d(2, 2)
 
       # self.fc1 = nn.Linear(64 * self.INPUT_IMG_DIMS[0] * self.INPUT_IMG_DIMS[0], 500)
-      self.fc1 = nn.Linear(4480, 1)
+      self.fc1 = nn.Linear(4480, 2)
 
 
    def forward(self, x):
@@ -80,24 +81,51 @@ class CNN(nn.Module):
 if __name__ == "__main__":
    TRAIN = False
 
+   # dataset = DrivingDataset("../res/datasets/05-14-2021__15-05-20_carTest.txt", minAcceleration=0.20)
+   # dataloader = DataLoader(dataset, batch_size=10, shuffle=True)
+
+
+   # batch = next(iter(dataloader))
+   # print(batch)
+   #
+   # cnn = CNN()
+   # print(cnn(batch[0]))
+
+
+   # Device
+   device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+   # Train params
+   numEpochs = 100
+   batchSize = 100
+   learningRate = 0.001
+
+   # Data
    dataset = DrivingDataset("../res/datasets/05-14-2021__15-05-20_carTest.txt", minAcceleration=0.20)
-   dataloader = DataLoader(dataset, batch_size=10, shuffle=True)
+   dataloader = DataLoader(dataset, batch_size=batchSize, shuffle=True)
 
+   # Init model
+   model = CNN().to(device=device)
 
-   batch = next(iter(dataloader))
-   print(batch)
+   # Loss function and optimizer
+   criterion = nn.MSELoss()
+   optimizer = optim.Adam(model.parameters(), lr=learningRate)
 
-   cnn = CNN()
-   print(cnn(batch[0]))
+   # Train
+   for epoch in range(numEpochs):
+      for batchIdx, (data, targets) in enumerate(dataloader):
+         data = data.to(device=device)
+         targets = targets.to(device=device)
 
+         # Feedforward and loss
+         preds = model(data)
+         loss = criterion(preds, targets)
 
-   # Training
+         # Backpropagation
+         optimizer.zero_grad()
+         loss.backward()
 
-   device = torch.device('cuda')
-
-   epochs = 10
-   batchSize = 50
-
-
-
-
+         # Optimizer step
+         optimizer.step()
+      print("Epoch #" + str(epoch + 1) + " Loss: " + str(loss))
+   torch.save(model.state_dict(), '../res/models/CNN_epochs_' + str(epoch + 1))

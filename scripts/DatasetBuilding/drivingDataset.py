@@ -17,9 +17,11 @@ class DrivingDataset(Dataset):
    def __getitem__(self, idx):
       inputs = self.inputs[idx]
       inputs = torch.from_numpy(inputs).view(1, inputs.shape[0], inputs.shape[1]).float()
-      # self.inputs = torch.from_numpy(inputs).view(1, inputs.shape[1], inputs.shape[2])
 
-      return inputs, self.desiredOutputs[idx]
+      targets = self.desiredOutputs[idx]
+      targets = torch.from_numpy(targets).float()
+
+      return inputs, targets
 
    def __parseDataset(self, filename, minAcceleration):
       print(">>> Parsing datafile " + filename.split("/")[-1])
