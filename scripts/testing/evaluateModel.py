@@ -15,11 +15,11 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Load Model
 model = CNN()
-model.load_state_dict(torch.load("../../res/models/CNN_epochs_100"))
+model.load_state_dict(torch.load("../../res/models/CNN_epochs_500"))
 model.eval()
 
 # Load Data
-dataset = DrivingDataset("../../res/datasets/05-14-2021__15-05-20_carTest.txt", minAcceleration=0.20)
+dataset = DrivingDataset("../../res/datasets/05-14-2021__15-05-20_carTest.txt", isTrainSet=False, minAcceleration=0.20)
 dataloader = DataLoader(dataset, batch_size=100, shuffle=True)
 inputs, targets = next(iter(dataloader))
 
@@ -58,11 +58,3 @@ plt.legend(handles=[targets_patch, preds_patch])
 
 plt.tight_layout()
 plt.show()
-
-
-
-
-
-
-
-
