@@ -13,18 +13,34 @@ class CNN(nn.Module):
       super().__init__()
       # Image dims H=75 W=100
       self.INPUT_IMG_DIMS = (75, 100)
-      self.conv00 = nn.Conv2d(1, 16,  3)
-      self.conv10 = nn.Conv2d(16, 32, 3)
-      self.conv20 = nn.Conv2d(32, 64, 3)
+      self.conv00 = nn.Conv2d(1,  16,  3)
+      # self.conv01 = nn.Conv2d(16, 16,  3)
+      # self.conv02 = nn.Conv2d(16, 16,  3)
+
+      self.conv10 = nn.Conv2d(16, 32,  3)
+      # self.conv11 = nn.Conv2d(32, 32,  3)
+
+      self.conv20 = nn.Conv2d(32, 64,  3)
+      # self.conv30 = nn.Conv2d(64, 128, 3)
       self.fc1 = nn.Linear(4480, 2)
+      # self.fc2 = nn.Linear(500, 2)
 
 
    def forward(self, x):
-      x = F.avg_pool2d(F.relu(self.conv00(x)), (2, 2))
-      x = F.avg_pool2d(F.relu(self.conv10(x)), (2, 2))
-      x = F.avg_pool2d(F.relu(self.conv20(x)), (2, 2))
+      x = F.relu(self.conv00(x))
+      # x = F.relu(self.conv01(x))
+      # x = F.relu(self.conv02(x))
+      x = F.avg_pool2d(x, (2, 2))
+
+      x = F.relu(self.conv10(x))
+      # x = F.relu(self.conv11(x))
+      x = F.avg_pool2d(x, (2, 2))
+
+      x = F.relu(self.conv20(x))
+      x = F.avg_pool2d(x, (2, 2))
 
       x = torch.flatten(x, 1) # flatten all dimensions except batch
+      # x = F.relu(self.fc1(x))
       x = self.fc1(x)
       return x
 
