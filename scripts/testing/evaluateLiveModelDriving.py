@@ -1,6 +1,5 @@
 import math
 import sys
-import time
 import imutils
 
 sys.path.append("..")
@@ -12,7 +11,6 @@ import matplotlib.patches as mpatches
 from DatasetBuilding.drivingDataset import DrivingDataset
 from torch.utils.data import DataLoader
 from modelCNN import CNN
-
 
 
 def drawLivePredictions(frame, acceleration, steering):
@@ -57,14 +55,13 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Load Model
 model = CNN()
-model.load_state_dict(torch.load("../../res/models/CNN_epochs_500"))
+model.load_state_dict(torch.load("../../res/models/FINAL_CNN_epochs_500"))
 model.eval()
 
 # Load Data
-dataset = DrivingDataset("../../res/datasets/05-14-2021__15-05-20_carTest.txt", isTrainSet=False, minAcceleration=0.20)
+dataset = DrivingDataset("../../res/datasets/08-05-2021__17-34-30_driving1.txt", isTrainSet=False, minAcceleration=0.20)
 dataloader = DataLoader(dataset, batch_size=100, shuffle=False)
-inputs, targets = next(iter(dataloader))
-
+# inputs, targets = next(iter(dataloader))
 
 end = False
 while not end:
@@ -74,37 +71,23 @@ while not end:
          preds = preds.flatten().detach().numpy()
          accel = preds[0]
          steer = preds[1]
+         steer = max(min(steer, 1), -1)
 
          frame = frame[0].numpy().astype(np.uint8)
          frame = np.dstack((frame, frame))
          frame = np.dstack((frame, frame))
          frame = imutils.resize(frame, width=500)
 
+
+
          drawLivePredictions(frame, acceleration=accel, steering=steer)
 
+         frame = imutils.resize(frame, width=1000)
+
+
          cv2.imshow('Live Model Decisions', frame)
-
-         # time.sleep(2)
-
          if cv2.waitKey(100) & 0xFF == ord('q'):
             end = True
             break
 
 cv2.destroyAllWindows()
-
-
-# while True:
-#    frame = np.zeros((500, 500))
-#    frame = np.dstack((frame, frame))
-#    frame = np.dstack((frame, frame))
-#
-#    frame = drawLivePredictions(frame, 0.5, 0)
-#
-#
-#    cv2.imshow('Frame', frame)
-#    key = cv2.waitKey(100) & 0xFF
-#    if key == ord('q'):
-#       break
-#
-# cv2.destroyAllWindows()
-

@@ -21,7 +21,7 @@ HEIGHT  = int((cap_obj.get(cv2.CAP_PROP_FRAME_HEIGHT) * WIDTH) / cap_obj.get(cv2
 ###  Create Trackbar Window  ###
 ret, frame = cap_obj.read()
 createTrackbars(frame.shape[1], frame.shape[0])
-values = loadCalibValues("../res/calibration_values_video")
+values = loadCalibValues("../res/calibration_values_video_new")
 setCalibValues(values)
 
 
@@ -95,15 +95,17 @@ while cap_obj.isOpened():
    ########################
    ###  Debugging only  ###
    debug = lane.getDebugFrame()
-   debug = lane.debugLanePoints(debug)
-   debug = lane.debugLaneEstimation(debug)
+   debugLanePoints = lane.debugLanePoints(debug)
+   debugLaneEstimation = lane.debugLaneEstimation(debug)
 
-   if centerX:
-      cv2.line(debug, (centerX, int(debug.shape[0]/2)), (centerX,  debug.shape[0]-1), (255, 0, 0), 1) #FIX CENTER METRIC
+   # if centerX:
+   #    cv2.line(debug, (centerX, int(debug.shape[0]/2)), (centerX,  debug.shape[0]-1), (255, 0, 0), 1) #FIX CENTER METRIC
 
    # cv2.line(debug, (int(debug.shape[1]/2), 0), (int(debug.shape[1]/2), debug.shape[0]-1),   (255, 0, 0), 2)
 
    debug = imutils.resize(debug, width=frame.shape[1])
+   debugLanePoints = imutils.resize(debugLanePoints, width=frame.shape[1])
+   debugLaneEstimation = imutils.resize(debugLaneEstimation, width=frame.shape[1])
 
    # warped_debug = cv2.warpPerspective(debug, Minv, (frame.shape[0], frame.shape[1]), flags=cv2.INTER_LINEAR)
    # warped_debug = cv2.warpPerspective(debug, Minv, (int(800), int(800)), flags=cv2.INTER_LINEAR)
@@ -111,15 +113,19 @@ while cap_obj.isOpened():
 
    ##################################
    ###  Show Windows and results  ###
-   drawFeaturesDebugText(frame, curv, centerX, coefs)
+   featureFrame = frame.copy()
+   drawFeaturesDebugText(featureFrame, curv, centerX, coefs)
    cv2.imshow('img_original', frame)
+   cv2.imshow('img_features', featureFrame)
    cv2.imshow('ROI', roi)
    cv2.imshow('Birds eye View', debug)
+   cv2.imshow('Lane Points', debugLanePoints)
+   cv2.imshow('Estimation', debugLaneEstimation)
    # cv2.imshow('Warped Debug', warped_debug)
 
    key = cv2.waitKey(1) & 0xFF
    if key == ord('s'):
-      calibFilePath = "../res/calibration_values_video"
+      calibFilePath = "../res/calibration_values_video_new"
       saveCalibValues(calibFilePath, values)
       break
    elif key == ord('q'):

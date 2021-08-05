@@ -74,7 +74,8 @@ if __name__ == '__main__':
    import cv2
 
    scale = 0.1
-   parser = DatasetParser("../../res/datasets/05-14-2021__15-05-20_carTest.txt")
+   # parser = DatasetParser("../../res/datasets/05-14-2021__15-05-20_carTest.txt")
+   parser = DatasetParser("../../res/datasets/08-05-2021__17-34-30_driving1.txt")
    inputs, desiredOutputs = parser.loadDataset()
 
 

@@ -167,16 +167,18 @@ class Lane:
    ###  DEBUG FUNCTIONS  ###
 
    def debugLanePoints(self, debugFrame):
+      debugFrame = debugFrame.copy()
       for pt in self.__leftLinePoints:
          cv2.circle(debugFrame, (pt[0],      pt[1]), 2, (0, 255, 0), -1)
-         cv2.circle(debugFrame, (pt[0] + 20, pt[1]), 1, (0, 0, 255), -1)
+         # cv2.circle(debugFrame, (pt[0] + 20, pt[1]), 1, (0, 0, 255), -1)
       for pt in self.__rightLinePoints:
          cv2.circle(debugFrame, (pt[0],      pt[1]), 2, (255, 0, 0), -1)
-         cv2.circle(debugFrame, (pt[0] + 20, pt[1]), 1,  (0, 0, 255), -1)
+         # cv2.circle(debugFrame, (pt[0] + 20, pt[1]), 1,  (0, 0, 255), -1)
       return debugFrame
 
 
    def debugLaneEstimation(self, debugFrame):
+      debugFrame = debugFrame.copy()
       if self.leftLine is not None:
          for pxl in range(debugFrame.shape[0]):
             cv2.circle(debugFrame, (int(self.leftLine(pxl)), pxl), 2, (0, 255, 0), -1)

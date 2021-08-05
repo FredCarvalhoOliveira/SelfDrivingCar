@@ -11,7 +11,8 @@ from datasetBuilder import DatasetBuilder
 import imutils
 
 
-host = '192.168.2.245'  # myLocalIp
+# host = '192.168.2.245'  # myLocalIp
+host = '192.168.1.6'  # myLocalIp
 
 # Init RemoteControl
 remoteController = RemoteController()
@@ -29,13 +30,6 @@ imgProcess.setCalibValues(calibValues)
 # Init dataset builder
 db = DatasetBuilder("carTest.txt", 50)
 
-# Define the codec and instantiate VideoWriter object
-# fourcc      = cv2.VideoWriter_fourcc(*'mp4v')
-# vidRecorder = cv2.VideoWriter('../../res/VideoRecording.mp4', fourcc, 20.0, (frame.shape[1], frame.shape[0]))
-
-# Dataset Builder
-# datasetBuilder = DatasetBuilder("carTest.txt", 1000)
-
 MESSAGE_SIZE = 13
 while True:
 
@@ -45,9 +39,6 @@ while True:
    # Receive Frame and resize it
    frame = videoReceiver.recvVideoFrame()
 
-   # Save Video Frame
-   # backtorgb = cv2.cvtColor(frame, cv2.COLOR_GRAY2RGB)
-   # vidRecorder.write(backtorgb)
 
    db.addDataLine(frame, np.array([leftVertical, rightHorizontal]))
 
@@ -80,7 +71,6 @@ while True:
 
 db.finish()
 videoReceiver.endConnection()
-#vidRecorder.release()
 cv2.destroyAllWindows()
 pygame.quit()
 sys.exit()
