@@ -36,12 +36,10 @@ class DatasetBuilder:
 
       line = ""
       for i in range(len(inShape)):
-         print(inShape[i])
          line += str(inShape[i])
          line += "|" if i == len(inShape) - 1 else ";"
 
       for i in range(len(outShape)):
-         print(outShape[i])
          line += str(outShape[i])
          line += "|" if i == len(outShape) - 1 else ";"
 

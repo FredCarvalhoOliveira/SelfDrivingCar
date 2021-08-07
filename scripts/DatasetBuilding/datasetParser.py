@@ -1,6 +1,4 @@
 import numpy as np
-import os
-from torch.utils.data import DataLoader
 
 class DatasetParser:
    def __init__(self, fileName):
@@ -75,8 +73,13 @@ if __name__ == '__main__':
 
    scale = 0.1
    # parser = DatasetParser("../../res/datasets/05-14-2021__15-05-20_carTest.txt")
-   parser = DatasetParser("../../res/datasets/08-05-2021__17-34-30_driving1.txt")
+   # parser = DatasetParser("../../res/datasets/08-05-2021__17-34-30_driving1.txt")
+   # parser = DatasetParser("../../res/datasets/session1.txt")
+   # parser = DatasetParser("../../res/datasets/05-14-2021__15-05-20_carTest.txt")
+   parser = DatasetParser("../../res/datasets/full.txt")
    inputs, desiredOutputs = parser.loadDataset()
+
+   print("Loaded " + str(len(inputs)) + " frames")
 
 
    imgIdx = 0

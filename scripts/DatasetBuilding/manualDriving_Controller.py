@@ -45,25 +45,25 @@ while True:
 
    scale = 5
    frame = imutils.resize(frame, frame.shape[1] * scale, frame.shape[0] * scale)
-   # Feature extraction
-   croppedImg = imgProcess.cropFrame(frame)
-   binImg     = imgProcess.segmentFrame(croppedImg)
-   roi        = imgProcess.applyRoiMask(binImg)
-   warp_img   = imgProcess.applyBirdsEyePerspective(roi)
-   curv, centerX, coefs = imgProcess.extractLaneFeatures(warp_img)
+   # # Feature extraction
+   # croppedImg = imgProcess.cropFrame(frame)
+   # binImg     = imgProcess.segmentFrame(croppedImg)
+   # roi        = imgProcess.applyRoiMask(binImg)
+   # warp_img   = imgProcess.applyBirdsEyePerspective(roi)
+   # curv, centerX, coefs = imgProcess.extractLaneFeatures(warp_img)
 
-   # Debugging
-   lane  = imgProcess.getLane()
-   debug = lane.getDebugFrame()
-   debug = lane.debugLanePoints(debug)
-   debug = lane.debugLaneEstimation(debug)
-   debug = imutils.resize(debug, width=frame.shape[1])
-
-   drawFeaturesDebugText(debug, curv, centerX, coefs)
+   # # Debugging
+   # lane  = imgProcess.getLane()
+   # debug = lane.getDebugFrame()
+   # debug = lane.debugLanePoints(debug)
+   # debug = lane.debugLaneEstimation(debug)
+   # debug = imutils.resize(debug, width=frame.shape[1])
+   #
+   # drawFeaturesDebugText(debug, curv, centerX, coefs)
 
    # Display
    cv2.imshow('frame', frame)
-   cv2.imshow('Debug Frame', debug)
+   # cv2.imshow('Debug Frame', debug)
 
    if cv2.waitKey(1) & 0xFF == ord('q'):
       print('Done')

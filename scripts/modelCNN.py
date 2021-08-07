@@ -56,7 +56,7 @@ if __name__ == "__main__":
    learningRate = 0.001
 
    # Data
-   dataset = DrivingDataset("../res/datasets/08-05-2021__17-34-30_driving1.txt", isTrainSet=True, minAcceleration=0.20)
+   dataset = DrivingDataset("../res/datasets/full.txt", isTrainSet=True, minAcceleration=0.20)
    dataloader = DataLoader(dataset, batch_size=batchSize, shuffle=True)
 
    # Init model
