@@ -1,41 +1,26 @@
 import pygame, pygame.freetype, sys
 
+'''
+   This is a tool to debug a DualShock4 (PS4) controller
+   It will read and represent both analog sticks
+'''
+
+def readAnalogSticks():
+   analogSticksMap = {"L_H": joystick.get_axis(0),
+                      "L_V": joystick.get_axis(1),
+                      "R_H": joystick.get_axis(2),
+                      "R_V": joystick.get_axis(3)}
+   return analogSticksMap
 
 def drawAnalogStick(frame, center, analogValues, font):
    centerX, centerY = center
    analogX, analogY = analogValues
-
+   # Draw stick representation
    pygame.draw.circle(frame, (255, 255, 255), (centerX, centerY), 60, 3)
    pygame.draw.circle(frame, (255, 0, 0), (int(centerX+30*analogX), int(centerY+30*analogY)), 30, 0)
-
+   # Draw stick values
    font.render_to(frame, (centerX-70, centerY+75), "Horizontal: " + str(round(analogX, 2)), (255, 255, 255))
    font.render_to(frame, (centerX-70, centerY+105), "Vertical: " + str(round(analogY, 2)), (255, 255, 255))
-
-
-
-'''
-PS4 Controller
-LEFT ANALOG 
-0 horizontal
-1 vertical
-
-RIGHT ANALOG
-2 horizontal
-3 vertical
-'''
-
-def readAnalogSticks():
-   analogSticksMap = {}
-   analogSticksMap["L_H"] = joystick.get_axis(0)
-   analogSticksMap["L_V"] = joystick.get_axis(1)
-   analogSticksMap["R_H"] = joystick.get_axis(2)
-   analogSticksMap["R_V"] = joystick.get_axis(3)
-   return analogSticksMap
-
-
-
-
-
 
 
 # setup the pygame window
@@ -73,12 +58,12 @@ while True:
          pygame.quit()
          sys.exit()
 
+   # Build new frame
    newFrame = pygame.Surface((WIDTH, HEIGHT))
    newFrame.fill(BACKGROUND)
 
+   # Draw title
    TITLE_FONT.render_to(newFrame, (int(WIDTH/2 - 180), 60), "Controller Debugger", (255, 255, 255))
-
-
 
    # Read analog stick values
    analogValues = readAnalogSticks()
@@ -87,5 +72,6 @@ while True:
    drawAnalogStick(newFrame, (int(WIDTH/2) - 200, int(HEIGHT/2)), (analogValues['L_H'], analogValues['L_V']), FONT)
    drawAnalogStick(newFrame, (int(WIDTH/2) + 200, int(HEIGHT/2)), (analogValues['R_H'], analogValues['R_V']), FONT)
 
+   # Update frame
    window.blit(newFrame, (0, 0))
    pygame.display.flip()

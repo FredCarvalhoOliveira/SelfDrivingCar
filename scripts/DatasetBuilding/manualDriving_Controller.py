@@ -12,7 +12,7 @@ import imutils
 
 
 # host = '192.168.2.245'  # myLocalIp
-host = '192.168.1.6'  # myLocalIp
+host = '192.168.1.3'  # myLocalIp
 
 # Init RemoteControl
 remoteController = RemoteController()

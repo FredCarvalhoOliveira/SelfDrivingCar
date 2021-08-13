@@ -19,12 +19,12 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Load Model
 model = CNN()
-model.load_state_dict(torch.load("../../res/models/FINAL_CNN_epochs_500"))
+model.load_state_dict(torch.load("../../res/models/FINAL_CNN_epochs_500_2.0"))
 model.eval()
 
 
 # host = '192.168.2.245'  # myLocalIp
-host = '192.168.1.6'  # myLocalIp
+host = '192.168.1.3'  # myLocalIp
 
 # Init RemoteControl
 remoteController = RemoteController()

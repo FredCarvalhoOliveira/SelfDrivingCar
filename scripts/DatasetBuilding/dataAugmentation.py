@@ -36,24 +36,21 @@ class DataAugmentation:
         return cv2.subtract(img, lightOffset)
 
     def transformShadows(self, img):
-        shadows = np.ones(img.shape)
+        shadows  = np.ones(img.shape)
         shadows *= 255
 
-        center_coordinates = (random.randint(0, img.shape[1]), random.randint(0, img.shape[0]))
-        axesLength = (random.randint(0, int(img.shape[0]/4)), random.randint(0, int(img.shape[0]/4)))
+        centerCoords = (random.randint(0, img.shape[1]), random.randint(0, img.shape[0]))
+        axesLength   = (random.randint(0, int(img.shape[0]/4)), random.randint(0, int(img.shape[0]/4)))
 
-        angle = random.randint(0, 360)
+        angle        = random.randint(0, 360)
+        startAngle   = 0
+        endAngle     = 360
 
-
-        startAngle = 0
-        endAngle   = 360
-
-        shadows = cv2.ellipse(shadows, center_coordinates, axesLength, angle, startAngle, endAngle, random.randint(0, 511), -1)
+        shadows  = cv2.ellipse(shadows, centerCoords, axesLength, angle, startAngle, endAngle, random.randint(0, 511), -1)
         shadows /= 255
 
         result = img * shadows
         # result = cv2.multiply(img, shadows)
-
         return result
 
 def augmentDataset(datasetPath, numVariations):
@@ -93,10 +90,10 @@ def augmentDataset(datasetPath, numVariations):
 
 
 if __name__ == "__main__":
-    augmentDataset("../../res/datasets/session1.txt", 20)
+    # augmentDataset("../../res/datasets/full.txt", numVariations=2)
 
 
-    # augment = DataAugmentation()
+    augment = DataAugmentation()
     # img = cv2.imread('../../res/imgs/roadImg.PNG', 0)
     # # plt.imshow(augment.transformShadows(img), cmap='gray')
     # # plt.show()

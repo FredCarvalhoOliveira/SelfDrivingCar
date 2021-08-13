@@ -1,14 +1,25 @@
 from datetime import datetime
 import numpy as np
-##############################################################
-#           This class is a dataset building tool            #
-#                                                            #
-#  DATASET FORMAT                                            #
-#  - CSV file                                                #
-#  - curv;centerX;coef[0];coef[1];coef[2]|hCtrl;vCtrl        #
-#    |--------------- INPUTS -----------| |- OUTPUTS -|      #
-#                                                            #
-##############################################################
+
+'''
+   This class is a dataset building tool
+   
+   First line of the file is the dataset metadata, 
+   describes the format of the inputs, outputs and respective variable types.
+   
+   METADATA FORMAT:
+   - InputShape|OutputShape|InputType|OutputType
+
+   DATASET FORMAT (With feature extraction)                                
+   - Modified CSV file                                               
+   - curv;centerX;coef[0];coef[1];coef[2]|hCtrl;vCtrl       
+   |--------------- INPUTS -------------||- OUTPUTS -|
+   
+   DATASET FORMAT (Without feature extraction, raw pixel values)                                
+   - Modified CSV file                                               
+   - pxl0;pxl1;pxl2;pxl3;pxl4;...|hCtrl;vCtrl       
+   |--------------- INPUTS -----||- OUTPUTS -|
+'''
 
 class DatasetBuilder:
    def __init__(self, fileName, bufferSize=1000):
@@ -105,7 +116,6 @@ if __name__ == '__main__':
    for i in range(100):
       ret_val, frame = cam.read()
       frame = imutils.resize(frame, int(frame.shape[1] * scale), int(frame.shape[0] * scale))
-      # frame = frame[int(frame.shape[0]/2):frame.shape[0]]
 
       frame   = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
       outputs = np.random.rand(2)

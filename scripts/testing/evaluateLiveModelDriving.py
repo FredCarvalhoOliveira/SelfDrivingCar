@@ -55,7 +55,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Load Model
 model = CNN()
-model.load_state_dict(torch.load("../../res/models/FINAL_CNN_epochs_500_2.0"))
+model.load_state_dict(torch.load("../../res/models/FINAL_CNN_epochs_500_3.0"))
 model.eval()
 
 # Load Data
@@ -89,5 +89,7 @@ while not end:
          if cv2.waitKey(100) & 0xFF == ord('q'):
             end = True
             break
+      if end:
+         break
 
 cv2.destroyAllWindows()
