@@ -22,7 +22,8 @@ class CNN(nn.Module):
       self.conv20 = nn.Conv2d(32, 64,  3)
       # self.conv21 = nn.Conv2d(64, 64,  3)
       # self.conv30 = nn.Conv2d(64, 128, 3)
-      self.fc1 = nn.Linear(4480, 2)
+      self.fc1 = nn.Linear(1280, 2) # Cropped data
+      # self.fc1 = nn.Linear(4480, 2)
       # self.fc2 = nn.Linear(500, 2)
 
 
@@ -56,7 +57,7 @@ if __name__ == "__main__":
    learningRate = 0.001
 
    # Data
-   dataset = DrivingDataset("../res/datasets/full.txt", isTrainSet=True, minAcceleration=0.20)
+   dataset    = DrivingDataset("../res/datasets/fullCropped.txt", isTrainSet=True, minAcceleration=0.20)
    dataloader = DataLoader(dataset, batch_size=batchSize, shuffle=True)
 
    # Init model

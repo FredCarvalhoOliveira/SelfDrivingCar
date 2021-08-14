@@ -31,6 +31,7 @@ class DataAugmentation:
         variations = variations.astype(img.dtype)
         return variations
 
+
     def transformLightLevel(self, img):
         lightOffset = random.randint(-200, 200)
         return cv2.subtract(img, lightOffset)
@@ -53,13 +54,24 @@ class DataAugmentation:
         # result = cv2.multiply(img, shadows)
         return result
 
+    def transformCrop(self, img, cropY):
+        return img[cropY:]
+
+    def mirrorData(self, img, cmds):
+        mirrored = np.flip(img, 1)  # Mirror image
+        cmds[0] *= -1  # Flip steering
+        return mirrored, cmds
+
+
+
+
 def augmentDataset(datasetPath, numVariations):
     db = DatasetBuilder("generated.txt", 50)
     augmenter = DataAugmentation()
 
+    print(">>> Loading dataset...")
     parser = DatasetParser(datasetPath)
     inputs, desiredOutputs = parser.loadDataset()
-    print(">>> Loading dataset...")
     print(">>> Dataset loaded with " + str(len(inputs)) + " frames")
     print(">>> Augmenting with " + str(numVariations) + " frame variations")
 
@@ -67,21 +79,25 @@ def augmentDataset(datasetPath, numVariations):
         frame = inputs[i]
         cmds  = desiredOutputs[i]
 
-        db.addDataLine(frame, cmds)
 
-        lightVariations  = augmenter.generateLightVariations(frame, numVariations)
-        for j in range(len(lightVariations)):
-            db.addDataLine(lightVariations[j], cmds)
+        # Crop dataset
+        db.addDataLine(augmenter.transformCrop(frame, 40), cmds)
 
-        shadowVariations = augmenter.generateShadowVariations(frame, numVariations)
-        for j in range(len(shadowVariations)):
-            db.addDataLine(shadowVariations[j], cmds)
+        # db.addDataLine(frame, cmds)
+
+        # lightVariations  = augmenter.generateLightVariations(frame, numVariations)
+        # for j in range(len(lightVariations)):
+        #     db.addDataLine(lightVariations[j], cmds)
+        #
+        # shadowVariations = augmenter.generateShadowVariations(frame, numVariations)
+        # for j in range(len(shadowVariations)):
+        #     db.addDataLine(shadowVariations[j], cmds)
 
         if i % 100 == 0 and i != 0:
             print("Processed " + str(i) + " frames")
     db.finish()
 
-    print(">>> Augmented data has " + str(len(inputs) + 2 * (len(inputs) * numVariations)) + " entries")
+    # print(">>> Augmented data has " + str(len(inputs) + 2 * (len(inputs) * numVariations)) + " entries")
 
 
 
@@ -90,13 +106,15 @@ def augmentDataset(datasetPath, numVariations):
 
 
 if __name__ == "__main__":
-    # augmentDataset("../../res/datasets/full.txt", numVariations=2)
+    # augmentDataset("../../res/datasets/full.txt", numVariations=1)
 
 
-    augment = DataAugmentation()
-    # img = cv2.imread('../../res/imgs/roadImg.PNG', 0)
-    # # plt.imshow(augment.transformShadows(img), cmap='gray')
-    # # plt.show()
+    # augment = DataAugmentation()
+    img = cv2.imread('../../res/imgs/roadImg.PNG', 0)
+    plt.imshow(img, cmap='gray')
+    plt.show()
+    plt.imshow(np.flip(img, 1), cmap='gray')
+    plt.show()
     #
     #
     # variations = augment.generateLightVariations(img, 25)
