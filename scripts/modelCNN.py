@@ -45,6 +45,28 @@ class CNN(nn.Module):
       x = self.fc1(x)
       return x
 
+class cnnCropped(nn.Module):
+   def __init__(self):
+      super().__init__()
+      # Image dims H=75 W=100
+      self.INPUT_IMG_DIMS = (75, 100)
+      self.conv00 = nn.Conv2d(1,  16,  3)
+      self.conv10 = nn.Conv2d(16, 32,  3)
+      self.conv20 = nn.Conv2d(32, 64,  3)
+      self.fc1 = nn.Linear(1280, 2)
+
+   def forward(self, x):
+      x = F.relu(self.conv00(x))
+      x = F.avg_pool2d(x, (2, 2))
+      x = F.relu(self.conv10(x))
+      x = F.avg_pool2d(x, (2, 2))
+      x = F.relu(self.conv20(x))
+      x = F.avg_pool2d(x, (2, 2))
+
+      x = torch.flatten(x, 1) # flatten all dimensions except batch
+      x = self.fc1(x)
+      return x
+
 
 
 if __name__ == "__main__":

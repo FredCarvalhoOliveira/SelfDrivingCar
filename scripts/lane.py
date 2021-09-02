@@ -141,7 +141,7 @@ class Lane:
          return None
       return int(self.leftLine(0) - self.leftLine(self.__laneView.shape[0]-1))
 
-
+   # TODO SUBTRACT LANE CENTER TO IMG CENTER TO GET CAR OFFSET!!!!!!!!!!!!!!!!!
    def getCenter(self, distanceToKeep):
       if self.leftLine is None and self.rightLine is None:
          return None

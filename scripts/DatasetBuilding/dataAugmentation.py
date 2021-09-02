@@ -109,22 +109,39 @@ if __name__ == "__main__":
     # augmentDataset("../../res/datasets/full.txt", numVariations=1)
 
 
-    # augment = DataAugmentation()
+    augment = DataAugmentation()
     img = cv2.imread('../../res/imgs/roadImg.PNG', 0)
-    plt.imshow(img, cmap='gray')
-    plt.show()
-    plt.imshow(np.flip(img, 1), cmap='gray')
-    plt.show()
+    # plt.imshow(img, cmap='gray')
+    # plt.show()
+    # plt.imshow(np.flip(img, 1), cmap='gray')
+    # plt.show()
     #
     #
     # variations = augment.generateLightVariations(img, 25)
     # variations = augment.generateShadowVariations(img, 25)
+
+    controls = [0.83, 0.61]
+
+    variations = augment.mirrorData(img, [0, 0])
     #
+
+    plt.figure("Data Augmentation", figsize=(15, 7))
+    plt.subplot(1, 2, 1)
+    plt.title("Aceleração = " + str(controls[0]) + "  Direção = " + str(controls[1]), fontsize=20)
+
+    plt.imshow(img, cmap='gray')
+    plt.axis('off')
+
+    plt.subplot(1, 2, 2)
+    plt.title("Aceleração = " + str(controls[0]) + "  Direção = " + str(controls[1] * -1), fontsize=20)
+    plt.imshow(variations[0], cmap='gray')
+    plt.axis('off')
+
     # plt.figure("Data Augmentation", figsize=(15, 7))
     # for i in range(25):
     #     plt.subplot(5, 5, i+1)
     #     plt.imshow(variations[i], cmap='gray')
     #     plt.axis('off')
-    #
-    # plt.tight_layout()
-    # plt.show()
+
+    plt.tight_layout()
+    plt.show()
