@@ -134,33 +134,58 @@ class Lane:
 
 
    def getCurvature(self):
-      # as duas estao boas fazer a media
-      # uma esta boa usar essa
-      # nenhuma esta boa return None
-      if self.leftLine is None:
-         return None
-      return int(self.leftLine(0) - self.leftLine(self.__laneView.shape[0]-1))
-
-   # TODO SUBTRACT LANE CENTER TO IMG CENTER TO GET CAR OFFSET!!!!!!!!!!!!!!!!!
-   def getCenter(self, distanceToKeep):
       if self.leftLine is None and self.rightLine is None:
-         return None
+         return 0
+      # Can see left line, Cant see right line
+      elif callable(self.leftLine) and self.rightLine is None:
+         return self.leftLine(0) - self.leftLine(self.__laneView.shape[0] - 1)
+      # Cant see left line, Can see right line
+      elif self.leftLine is None and callable(self.rightLine):
+         return self.rightLine(0) - self.rightLine(self.__laneView.shape[0] - 1)
+      # Can see both, return mean
+      else:
+         return (self.leftLine(0) - self.leftLine(self.__laneView.shape[0] - 1)) + \
+                (self.rightLine(0) - self.rightLine(self.__laneView.shape[0] - 1)) / 2
 
+
+
+      # # as duas estao boas fazer a media
+      # # uma esta boa usar essa
+      # # nenhuma esta boa return None
+      # if self.leftLine is None:
+      #    return 0
+      # return int(self.leftLine(0) - self.leftLine(self.__laneView.shape[0]-1))
+
+   def getCenterOffset(self, distanceToKeep):
+      if self.leftLine is None and self.rightLine is None:
+         return 0
       # Can see left line, Cant see right line
       elif callable(self.leftLine) and self.rightLine is None:
          bottomLeftLine = self.leftLine(self.__laneView.shape[0]-1)
-         return int(bottomLeftLine + distanceToKeep)
-
+         return (bottomLeftLine + distanceToKeep) - self.__laneView.shape[1]/2
       # Cant see left line, Can see right line
       elif self.leftLine is None and callable(self.rightLine):
          bottomRightLine = self.rightLine(self.__laneView.shape[0]-1)
-         return int(bottomRightLine - distanceToKeep)
-
+         return (bottomRightLine - distanceToKeep) - self.__laneView.shape[1]/2
       # Can see both
       else:
          bottomLeftLine  = self.leftLine(self.__laneView.shape[0]-1)
          bottomRightLine = self.rightLine(self.__laneView.shape[0]-1)
-         return int(bottomLeftLine + (bottomRightLine - bottomLeftLine)/2)
+         return (bottomLeftLine + (bottomRightLine - bottomLeftLine)/2) - self.__laneView.shape[1]/2
+
+   def getEstimationCoefs(self):
+      if self.leftLine is None and self.rightLine is None:
+         return 0
+      # Can see left line, Cant see right line
+      elif callable(self.leftLine) and self.rightLine is None:
+        return self.leftLineCoef
+      # Cant see left line, Can see right line
+      elif self.leftLine is None and callable(self.rightLine):
+         return self.rightLineCoef
+      # Can see both
+      else:
+         return self.leftLineCoef # maybe return mean from both coefs
+
 
 
    #########################

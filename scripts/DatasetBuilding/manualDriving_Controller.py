@@ -43,9 +43,9 @@ while True:
    db.addDataLine(frame, np.array([leftVertical, rightHorizontal]))
 
 
-   scale = 5
-   frame = imutils.resize(frame, frame.shape[1] * scale, frame.shape[0] * scale)
-   # # Feature extraction
+   # scale = 5
+   # frame = imutils.resize(frame, frame.shape[1] * scale, frame.shape[0] * scale)
+   # Feature extraction
    # croppedImg = imgProcess.cropFrame(frame)
    # binImg     = imgProcess.segmentFrame(croppedImg)
    # roi        = imgProcess.applyRoiMask(binImg)

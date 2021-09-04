@@ -6,10 +6,16 @@ import random
 from datasetParser import DatasetParser
 from datasetBuilder import DatasetBuilder
 
+from scripts.imageProcessing import ImageProcessing
+from scripts.utils import loadCalibValues
+
+
 
 class DataAugmentation:
     def __init__(self):
-        pass
+        calibValues = loadCalibValues("../../res/calibration_values_new")
+        self.__imgProcess  = ImageProcessing()
+        self.__imgProcess.setCalibValues(calibValues)
 
     def generateLightVariations(self, img, numVariations):
         height, width = img.shape
@@ -61,6 +67,16 @@ class DataAugmentation:
         mirrored = np.flip(img, 1)  # Mirror image
         cmds[0] *= -1  # Flip steering
         return mirrored, cmds
+
+    def transformImgToFeatures(self, img):
+        # Feature extraction
+        croppedImg = self.__imgProcess.cropFrame(img)
+        binImg     = self.__imgProcess.segmentFrame(croppedImg)
+        roi        = self.__imgProcess.applyRoiMask(binImg)
+        warp_img   = self.__imgProcess.applyBirdsEyePerspective(roi)
+        curv, centerOffset, coefs = self.__imgProcess.extractLaneFeatures(warp_img)
+        features = np.hstack((np.array([curv, centerOffset]), coefs))
+        return features
 
 
 
@@ -120,22 +136,25 @@ if __name__ == "__main__":
     # variations = augment.generateLightVariations(img, 25)
     # variations = augment.generateShadowVariations(img, 25)
 
+    variations = augment.transformImgToFeatures(img)
+    print(variations)
+
     controls = [0.83, 0.61]
 
-    variations = augment.mirrorData(img, [0, 0])
+    # variations = augment.mirrorData(img, [0, 0])
     #
 
-    plt.figure("Data Augmentation", figsize=(15, 7))
-    plt.subplot(1, 2, 1)
-    plt.title("Aceleração = " + str(controls[0]) + "  Direção = " + str(controls[1]), fontsize=20)
-
-    plt.imshow(img, cmap='gray')
-    plt.axis('off')
-
-    plt.subplot(1, 2, 2)
-    plt.title("Aceleração = " + str(controls[0]) + "  Direção = " + str(controls[1] * -1), fontsize=20)
-    plt.imshow(variations[0], cmap='gray')
-    plt.axis('off')
+    # plt.figure("Data Augmentation", figsize=(15, 7))
+    # plt.subplot(1, 2, 1)
+    # plt.title("Aceleração = " + str(controls[0]) + "  Direção = " + str(controls[1]), fontsize=20)
+    #
+    # plt.imshow(img, cmap='gray')
+    # plt.axis('off')
+    #
+    # plt.subplot(1, 2, 2)
+    # plt.title("Aceleração = " + str(controls[0]) + "  Direção = " + str(controls[1] * -1), fontsize=20)
+    # plt.imshow(variations[0], cmap='gray')
+    # plt.axis('off')
 
     # plt.figure("Data Augmentation", figsize=(15, 7))
     # for i in range(25):
@@ -143,5 +162,5 @@ if __name__ == "__main__":
     #     plt.imshow(variations[i], cmap='gray')
     #     plt.axis('off')
 
-    plt.tight_layout()
-    plt.show()
+    # plt.tight_layout()
+    # plt.show()

@@ -53,10 +53,10 @@ class ImageProcessing:
       self.lane.updateLaneView(warp_img)
       leftPts, rightPts = self.lane.findLaneLines(numLanePts=20)
       self.lane.estimateLaneLines(leftPts, rightPts)
-      curv    = self.lane.getCurvature()
-      centerX = self.lane.getCenter(55) # TODO CHANGE THIS IMPORTANT!!!! REMOVE ARG FROM HERE
-      coef    = self.lane.leftLineCoef
-      return curv, centerX, coef
+      curv         = self.lane.getCurvature()
+      centerOffset = self.lane.getCenterOffset(55) # TODO CHANGE THIS IMPORTANT!!!! REMOVE ARG FROM HERE
+      coef         = self.lane.getEstimationCoefs()
+      return curv, centerOffset, coef
 
 
    def __applyMorphOps(self, binaryImg):

@@ -5,6 +5,8 @@ import torch.nn.functional as F
 from tqdm import tqdm
 from DatasetBuilding.drivingDataset import DrivingDataset
 from torch.utils.data import DataLoader
+from torch.utils.tensorboard import SummaryWriter
+
 
 
 
@@ -74,7 +76,7 @@ if __name__ == "__main__":
    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
    # Train params
-   numEpochs = 500
+   numEpochs = 3#500
    batchSize = 100
    learningRate = 0.001
 
@@ -89,6 +91,9 @@ if __name__ == "__main__":
    criterion = nn.MSELoss()
    optimizer = optim.Adam(model.parameters(), lr=learningRate)
 
+   writer = SummaryWriter(f'runs/CNN/cropped')
+
+   step = 0
    # Train
    for epoch in range(numEpochs):
       for batchIdx, (data, targets) in enumerate(dataloader):
@@ -105,5 +110,9 @@ if __name__ == "__main__":
 
          # Optimizer step
          optimizer.step()
+
+         writer.add_scalar('Training Loss', loss, global_step=step)
+         step += 1
+
       print("Epoch #" + str(epoch + 1) + " Loss: " + str(loss))
    torch.save(model.state_dict(), '../res/models/FINAL_CNN_epochs_' + str(epoch + 1))
