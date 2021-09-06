@@ -53,7 +53,6 @@ while True:
    inputs = inputs.view(1, 1, inputs.shape[1], inputs.shape[2])
 
 
-
    preds = model(inputs)
    preds = preds.flatten().detach().numpy()
    accel = preds[0]

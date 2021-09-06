@@ -40,7 +40,6 @@ class VideoStreamReceiver:
 
       # Extract frame
       frame = pickle.loads(frame_data)
-
       return frame
 
    def endConnection(self):

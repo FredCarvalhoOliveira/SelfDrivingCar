@@ -8,8 +8,6 @@ from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 
 
-
-
 class CNN(nn.Module):
    def __init__(self):
       super().__init__()
@@ -47,27 +45,27 @@ class CNN(nn.Module):
       x = self.fc1(x)
       return x
 
-class cnnCropped(nn.Module):
-   def __init__(self):
-      super().__init__()
-      # Image dims H=75 W=100
-      self.INPUT_IMG_DIMS = (75, 100)
-      self.conv00 = nn.Conv2d(1,  16,  3)
-      self.conv10 = nn.Conv2d(16, 32,  3)
-      self.conv20 = nn.Conv2d(32, 64,  3)
-      self.fc1 = nn.Linear(1280, 2)
-
-   def forward(self, x):
-      x = F.relu(self.conv00(x))
-      x = F.avg_pool2d(x, (2, 2))
-      x = F.relu(self.conv10(x))
-      x = F.avg_pool2d(x, (2, 2))
-      x = F.relu(self.conv20(x))
-      x = F.avg_pool2d(x, (2, 2))
-
-      x = torch.flatten(x, 1) # flatten all dimensions except batch
-      x = self.fc1(x)
-      return x
+# class cnnCropped(nn.Module):
+#    def __init__(self):
+#       super().__init__()
+#       # Image dims H=75 W=100
+#       self.INPUT_IMG_DIMS = (75, 100)
+#       self.conv00 = nn.Conv2d(1,  16,  3)
+#       self.conv10 = nn.Conv2d(16, 32,  3)
+#       self.conv20 = nn.Conv2d(32, 64,  3)
+#       self.fc1 = nn.Linear(1280, 2)
+#
+#    def forward(self, x):
+#       x = F.relu(self.conv00(x))
+#       x = F.avg_pool2d(x, (2, 2))
+#       x = F.relu(self.conv10(x))
+#       x = F.avg_pool2d(x, (2, 2))
+#       x = F.relu(self.conv20(x))
+#       x = F.avg_pool2d(x, (2, 2))
+#
+#       x = torch.flatten(x, 1) # flatten all dimensions except batch
+#       x = self.fc1(x)
+#       return x
 
 
 
@@ -76,7 +74,7 @@ if __name__ == "__main__":
    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
    # Train params
-   numEpochs = 3#500
+   numEpochs = 1#500
    batchSize = 100
    learningRate = 0.001
 
@@ -91,7 +89,14 @@ if __name__ == "__main__":
    criterion = nn.MSELoss()
    optimizer = optim.Adam(model.parameters(), lr=learningRate)
 
-   writer = SummaryWriter(f'runs/CNN/cropped')
+
+   batchSizes    = [8, 16, 32, 64, 128, 256, 512]
+   learningRates = [0.1, 0.01, 0.001, 0.0001]
+
+
+
+
+   writer = SummaryWriter(f'runs/CNN/crop_lr{learningRate}_bs{batchSize}')
 
    step = 0
    # Train
