@@ -56,7 +56,7 @@ def train(model, dataset, numEpochs, batchSize, learningRate, device):
     criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=learningRate)
 
-    writer = SummaryWriter(f'runs/CNN/{model.name}_bs{batchSize}_lr{learningRate}')
+    writer = SummaryWriter(f'runs/CNN/{model.name}{numEpochs}_bs{batchSize}_lr{learningRate}')
 
     step = 0
     # Train
@@ -104,8 +104,8 @@ def train(model, dataset, numEpochs, batchSize, learningRate, device):
 # Device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-dataset = DrivingDataset("../res/datasets/imgCropped.txt", isTrainSet=True, minAcceleration=0.20)
-NUM_EPOCS     = 20
+dataset = DrivingDataset("../res/datasets/fullCropped.txt", isTrainSet=True, minAcceleration=0.20)
+NUM_EPOCS     = 100
 BATCH_SIZE    = 64
 LEARNING_RATE = 0.001
 
