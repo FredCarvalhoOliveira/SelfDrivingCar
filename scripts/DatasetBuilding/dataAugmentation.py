@@ -95,16 +95,23 @@ def augmentDataset(datasetPath, numVariations):
         frame = inputs[i]
         cmds  = desiredOutputs[i]
 
+        # Save cropped img
+        # cropImg = augmenter.transformCrop(frame, 40)
+        db.addDataLine(frame, cmds)
 
-        # Crop dataset
-        db.addDataLine(augmenter.transformCrop(frame, 40), cmds)
+        # # Save mirrored img and commands
+        mirroredImg, mirroredCmds = augmenter.mirrorData(frame, cmds)
+        db.addDataLine(mirroredImg, mirroredCmds)
 
-        # db.addDataLine(frame, cmds)
 
-        # lightVariations  = augmenter.generateLightVariations(frame, numVariations)
+        # lightVariations  = augmenter.generateLightVariations(cropImg, numVariations)
         # for j in range(len(lightVariations)):
         #     db.addDataLine(lightVariations[j], cmds)
-        #
+
+        # lightVariationsMirror = augmenter.generateLightVariations(mirroredImg, numVariations)
+        # for j in range(len(lightVariationsMirror)):
+        #     db.addDataLine(lightVariationsMirror[j], mirroredCmds)
+
         # shadowVariations = augmenter.generateShadowVariations(frame, numVariations)
         # for j in range(len(shadowVariations)):
         #     db.addDataLine(shadowVariations[j], cmds)
@@ -122,45 +129,4 @@ def augmentDataset(datasetPath, numVariations):
 
 
 if __name__ == "__main__":
-    # augmentDataset("../../res/datasets/full.txt", numVariations=1)
-
-
-    augment = DataAugmentation()
-    img = cv2.imread('../../res/imgs/roadImg.PNG', 0)
-    # plt.imshow(img, cmap='gray')
-    # plt.show()
-    # plt.imshow(np.flip(img, 1), cmap='gray')
-    # plt.show()
-    #
-    #
-    # variations = augment.generateLightVariations(img, 25)
-    # variations = augment.generateShadowVariations(img, 25)
-
-    variations = augment.transformImgToFeatures(img)
-    print(variations)
-
-    controls = [0.83, 0.61]
-
-    # variations = augment.mirrorData(img, [0, 0])
-    #
-
-    # plt.figure("Data Augmentation", figsize=(15, 7))
-    # plt.subplot(1, 2, 1)
-    # plt.title("Aceleração = " + str(controls[0]) + "  Direção = " + str(controls[1]), fontsize=20)
-    #
-    # plt.imshow(img, cmap='gray')
-    # plt.axis('off')
-    #
-    # plt.subplot(1, 2, 2)
-    # plt.title("Aceleração = " + str(controls[0]) + "  Direção = " + str(controls[1] * -1), fontsize=20)
-    # plt.imshow(variations[0], cmap='gray')
-    # plt.axis('off')
-
-    # plt.figure("Data Augmentation", figsize=(15, 7))
-    # for i in range(25):
-    #     plt.subplot(5, 5, i+1)
-    #     plt.imshow(variations[i], cmap='gray')
-    #     plt.axis('off')
-
-    # plt.tight_layout()
-    # plt.show()
+    augmentDataset("../../res/datasets/fullCropped_light.txt", numVariations=0)

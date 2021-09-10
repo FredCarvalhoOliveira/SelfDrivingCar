@@ -12,12 +12,11 @@ class CNN(nn.Module):
    def __init__(self):
       super().__init__()
       self.name = "Lite"
-      # Image dims H=75 W=100
-      self.INPUT_IMG_DIMS = (75, 100)
       self.conv00 = nn.Conv2d(1,  16,  3)
       self.conv10 = nn.Conv2d(16, 32,  3)
       self.conv20 = nn.Conv2d(32, 64,  3)
       self.fc1 = nn.Linear(1280, 2)
+      # self.fc1 = nn.Linear(4480, 2)
 
    def forward(self, x):
       x = F.relu(self.conv00(x))
@@ -38,7 +37,6 @@ class CNN_MEDIUM(nn.Module):
       super().__init__()
       self.name = "Medium"
 
-      self.INPUT_IMG_DIMS = (75, 100)
       self.conv00 = nn.Conv2d(1,  16,   3)
       self.conv01 = nn.Conv2d(16,  16,  3)
 
@@ -69,7 +67,6 @@ class CNN_LARGE(nn.Module):
       super().__init__()
       self.name = "Large"
 
-      self.INPUT_IMG_DIMS = (75, 100)
       self.conv00 = nn.Conv2d(1,  16,   3)
       self.conv01 = nn.Conv2d(16,  16,  3)
 
@@ -116,7 +113,6 @@ if __name__ == "__main__":
    dataloader = DataLoader(dataset, batch_size=batchSize, shuffle=True)
 
    # Init model
-   model = CNN().to(device=device)
    model = CNN().to(device=device)
 
    # Loss function and optimizer

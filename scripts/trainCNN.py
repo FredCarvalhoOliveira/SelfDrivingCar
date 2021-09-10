@@ -44,7 +44,7 @@ def train_old(model, dataset, numEpochs, batchSize, learningRate, device):
         writer.add_hparams({'LearningRate': learningRate, 'BatchSize': batchSize}, {'Loss': sum(losses)/len(losses)})
         print("Epoch #" + str(epoch + 1) + " Loss: " + str(loss))
 
-def train(model, dataset, numEpochs, batchSize, learningRate, device):
+def train(model, dataset, numEpochs, batchSize, learningRate, device, title=""):
     print(f">>> Training {model.name} CNN")
 
     model.train()
@@ -56,7 +56,7 @@ def train(model, dataset, numEpochs, batchSize, learningRate, device):
     criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=learningRate)
 
-    writer = SummaryWriter(f'runs/CNN/{model.name}{numEpochs}_bs{batchSize}_lr{learningRate}')
+    writer = SummaryWriter(f'runs/CNN/{title}{model.name}{numEpochs}_bs{batchSize}_lr{learningRate}')
 
     step = 0
     # Train
@@ -79,7 +79,7 @@ def train(model, dataset, numEpochs, batchSize, learningRate, device):
             writer.add_scalar('Training Loss', loss, global_step=step)
             step += 1
         print("Epoch #" + str(epoch + 1) + " Loss: " + str(loss))
-    torch.save(model.state_dict(), f'../res/models/{model.name}_epochs_{epoch+1}')
+    torch.save(model.state_dict(), f'../res/models/{title}{model.name}_epochs_{epoch+1}')
 
 
 # Device
@@ -104,7 +104,7 @@ def train(model, dataset, numEpochs, batchSize, learningRate, device):
 # Device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-dataset = DrivingDataset("../res/datasets/fullCropped.txt", isTrainSet=True, minAcceleration=0.20)
+dataset = DrivingDataset("../res/datasets/fullCropped_light.txt", isTrainSet=True, minAcceleration=0.20)
 NUM_EPOCS     = 100
 BATCH_SIZE    = 64
 LEARNING_RATE = 0.001
@@ -114,7 +114,13 @@ cnnMedium = CNN_MEDIUM().to(device=device)
 cnnLarge  = CNN_LARGE().to(device=device)
 models    = [cnnLite, cnnMedium, cnnLarge]
 
+# print(cnnLite)
+# print()
+# print(cnnMedium)
+# print()
+# print(cnnLarge)
+
 for model in models:
-    train(model=model, dataset=dataset, numEpochs=NUM_EPOCS, batchSize=BATCH_SIZE, learningRate=LEARNING_RATE, device=device)
+    train(model=model, dataset=dataset, numEpochs=NUM_EPOCS, batchSize=BATCH_SIZE, learningRate=LEARNING_RATE, device=device, title="crpLight_")
     print()
 
