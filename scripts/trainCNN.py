@@ -79,6 +79,8 @@ def train(model, dataset, numEpochs, batchSize, learningRate, device, title=""):
             writer.add_scalar('Training Loss', loss, global_step=step)
             step += 1
         print("Epoch #" + str(epoch + 1) + " Loss: " + str(loss))
+        if epoch % 50 == 0:
+            torch.save(model.state_dict(), f'../res/models/{title}{model.name}_epochs_{epoch + 1}_BACKUP')
     torch.save(model.state_dict(), f'../res/models/{title}{model.name}_epochs_{epoch+1}')
 
 
@@ -104,15 +106,15 @@ def train(model, dataset, numEpochs, batchSize, learningRate, device, title=""):
 # Device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-dataset = DrivingDataset("../res/datasets/fullCropped_light.txt", isTrainSet=True, minAcceleration=0.20)
-NUM_EPOCS     = 100
+dataset = DrivingDataset("../res/datasets/fullCropped_light_mirror.txt", isTrainSet=True, minAcceleration=0.20)
+NUM_EPOCS     = 500
 BATCH_SIZE    = 64
 LEARNING_RATE = 0.001
 
 cnnLite   = CNN().to(device=device)
-cnnMedium = CNN_MEDIUM().to(device=device)
-cnnLarge  = CNN_LARGE().to(device=device)
-models    = [cnnLite, cnnMedium, cnnLarge]
+# cnnMedium = CNN_MEDIUM().to(device=device)
+# cnnLarge  = CNN_LARGE().to(device=device)
+models    = [cnnLite]
 
 # print(cnnLite)
 # print()
@@ -121,6 +123,6 @@ models    = [cnnLite, cnnMedium, cnnLarge]
 # print(cnnLarge)
 
 for model in models:
-    train(model=model, dataset=dataset, numEpochs=NUM_EPOCS, batchSize=BATCH_SIZE, learningRate=LEARNING_RATE, device=device, title="crpLight_")
+    train(model=model, dataset=dataset, numEpochs=NUM_EPOCS, batchSize=BATCH_SIZE, learningRate=LEARNING_RATE, device=device, title="crpLightMirror_")
     print()
 

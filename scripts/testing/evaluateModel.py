@@ -85,14 +85,20 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Load Models
 cnnLite = CNN().to(device=device)
-# cnnLite.load_state_dict(torch.load("../../res/models/Lite_epochs_100"))
-cnnLite.load_state_dict(torch.load("../../res/models/crpLight_Lite_epochs_100"))
+cnnLite.load_state_dict(torch.load("../../res/models/Lite_epochs_100"))
 cnnLite.eval()
 
+cnnLite_augment = CNN().to(device=device)
+cnnLite_augment.load_state_dict(torch.load("../../res/models/crpLight_Lite_epochs_100"))
+cnnLite_augment.eval()
+
 cnnMedium = CNN_MEDIUM().to(device=device)
-# cnnMedium.load_state_dict(torch.load("../../res/models/Medium_epochs_100"))
-cnnMedium.load_state_dict(torch.load("../../res/models/crpLight_Medium_epochs_100"))
+cnnMedium.load_state_dict(torch.load("../../res/models/Medium_epochs_100"))
 cnnMedium.eval()
+
+cnnMedium_augment = CNN_MEDIUM().to(device=device)
+cnnMedium_augment.load_state_dict(torch.load("../../res/models/crpLight_Medium_epochs_100"))
+cnnMedium_augment.eval()
 
 cnnLarge = CNN_LARGE().to(device=device)
 cnnLarge.load_state_dict(torch.load("../../res/models/Large_epochs_100"))
@@ -104,13 +110,15 @@ cnnLarge.eval()
 
 
 # Load Data
-dataset = DrivingDataset("../../res/datasets/fullCropped_light.txt", isTrainSet=False, minAcceleration=0.20)
+dataset = DrivingDataset("../../res/datasets/fullCropped.txt", isTrainSet=False, minAcceleration=0.20)
 
 # Calculate losses
 models = [cnnLite, cnnMedium, cnnLarge]
-print(f"Lite   - {getModelLoss(dataset, cnnLite)}")
-print(f"Medium - {getModelLoss(dataset, cnnMedium)}")
-print(f"Large  - {getModelLoss(dataset, cnnLarge)}")
+print(f"Lite              - {getModelLoss(dataset, cnnLite)}")
+# print(f"Lite  (Augmented) - {getModelLoss(dataset, cnnLite_augment)}")
+print(f"Medium            - {getModelLoss(dataset, cnnMedium)}")
+# print(f"Medium(Augmented) - {getModelLoss(dataset, cnnMedium_augment)}")
+print(f"Large             - {getModelLoss(dataset, cnnLarge)}")
 
 # Plot model regressions
 NUM_SAMPLES = 100
